@@ -1,7 +1,12 @@
 import Image from 'next/image';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { signIn, useSession } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+import { Multistep } from '@/components/Multistep';
+import { RegisterUserForm } from './registerUserForm';
+import { Button } from '@/components/Action/Button/buttons';
 
 import { ArrowCircleLeft, ArrowCircleRight, Check } from 'phosphor-react';
 
@@ -11,17 +16,12 @@ import googleIcon from '../../assets/logos_google-icon.svg';
 import rocketLaunchIcon from '../../assets/RocketLaunch.svg';
 
 import { HomeContainer, Preview, LoginContainer, LoginGroup, LoginBox, LoginOptionBox, RegisterUserContainer, ErrorMessage } from './styles';
-import { RegisterUserForm } from './registerUserForm';
-import { Multistep } from '@/components/Multistep';
-import { useState } from 'react';
-import { Button } from '@/components/Action/Button/buttons';
 
-export default function Home() {
+export default function SignIn() {
 	const router = useRouter();
 	const session = useSession();
 
-	const [isFirstSection, setIsFirstSection] = useState(true);
-	const [selectedTab, setSelectedTab] = useState('auth');
+	const [selectedTab, setSelectedTab] = useState('authentications');
 
 	const hasAuthError = !!router.query.error;
 	const isSigedIn = session.status === 'authenticated';
@@ -30,8 +30,8 @@ export default function Home() {
 		await signIn('google');
 	}
 
-	function handleNextSection() {
-		setIsFirstSection(!isFirstSection);
+	function loginAsGuest() {
+		router.push('/home');
 	}
 
 	return (
@@ -83,7 +83,7 @@ export default function Home() {
 											</div>
 										</LoginOptionBox>
 
-										<LoginOptionBox>
+										<LoginOptionBox onClick={() => loginAsGuest()}>
 											<Image src={rocketLaunchIcon} quality={100} height={32} priority alt='Imagem do logo de um foguete' />
 											<div className='not-connected'>
 												<span>Entrar como visitante</span>
@@ -94,10 +94,10 @@ export default function Home() {
 								) : (
 									<RegisterUserContainer>
 										<RegisterUserForm />
-										<Button onClick={() => setSelectedTab('authentications')}>
+										<Button size='sm' onClick={() => setSelectedTab('authentications')}>
 											<ArrowCircleLeft size={32} weight='fill' />
 										</Button>
-										<Button>Registrar</Button>
+										<Button size='sm'>Registrar</Button>
 									</RegisterUserContainer>
 								)}
 							</LoginBox>

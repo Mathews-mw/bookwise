@@ -8,9 +8,9 @@ export interface IButtonProps extends ComponentProps<typeof StichesButton> {
 	size?: 'sm' | 'md';
 }
 
-export function Button({ children, variant, colorScheme, size }: IButtonProps) {
+export function Button({ children, variant, colorScheme, size, ...props }: IButtonProps) {
 	return (
-		<StichesButton variant={variant} colorScheme={colorScheme} size={size}>
+		<StichesButton variant={variant} colorScheme={colorScheme} size={size} {...props}>
 			{children}
 		</StichesButton>
 	);
