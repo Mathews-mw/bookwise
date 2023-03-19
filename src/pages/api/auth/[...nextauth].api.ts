@@ -1,9 +1,10 @@
 import { PrismaAdapter } from '@/lib/nextAuth/prisma-adapter';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse, NextPageContext } from 'next';
 import NextAuth, { NextAuthOptions } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
+import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
+import GitHubProvider, { GithubProfile } from 'next-auth/providers/github';
 
-export function buildNextAuthOptions(req: NextApiRequest, res: NextApiResponse): NextAuthOptions {
+export function buildNextAuthOptions(req: NextApiRequest | NextPageContext['req'], res: NextApiResponse | NextPageContext['res']): NextAuthOptions {
 	return {
 		adapter: PrismaAdapter(req, res),
 
@@ -13,21 +14,61 @@ export function buildNextAuthOptions(req: NextApiRequest, res: NextApiResponse):
 				clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
 				authorization: {
 					params: {
+						prompt: 'consent',
+						access_type: 'offline',
+						response_type: 'code',
 						scope: 'https://www.googleapis.com/auth/userinfo.email',
 					},
 				},
+
+				profile(profile: GoogleProfile) {
+					return {
+						id: profile.sub,
+						name: profile.name,
+						username: '',
+						email: profile.email,
+						avatar_url: profile.picture,
+					};
+				},
 			}),
-			// ...add more providers here
+			GitHubProvider({
+				clientId: process.env.GITHUB_ID ?? '',
+				clientSecret: process.env.GITHUB_SECRET ?? '',
+
+				profile(profile: GithubProfile) {
+					return {
+						id: profile.id.toString(),
+						name: profile.name!,
+						username: '',
+						email: profile.email!,
+						avatar_url: profile.avatar_url,
+					};
+				},
+			}),
 		],
 
 		callbacks: {
 			async signIn({ account }) {
-				if (!account?.scope?.includes('https://www.googleapis.com/auth/userinfo.email')) {
-					return 'http://localhost:3000?error=permissions';
+				if (account?.provider === 'github' && !account?.scope?.includes('read:user,user:email')) {
+					return 'http://localhost:3000?error=githubPermissions';
+				}
+				if (account?.provider === 'google' && !account?.scope?.includes('https://www.googleapis.com/auth/userinfo.email')) {
+					return 'http://localhost:3000?error=googlePermissions';
 				}
 
 				return true;
 			},
+
+			async session({ session, user }) {
+				return {
+					...session,
+					user,
+				};
+			},
+		},
+
+		pages: {
+			error: '/auth/error',
 		},
 	};
 }

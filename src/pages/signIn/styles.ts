@@ -116,9 +116,9 @@ export const RegisterUserContainer = styled('div', {
 	display: 'flex',
 	flexDirection: 'column',
 	gap: '1rem',
-});
 
-export const ErrorMessage = styled('span', {
-	color: '$errorMsg',
-	marginTop: 8,
+	'.btnGroup': {
+		display: 'flex',
+		gap: 8,
+	},
 });

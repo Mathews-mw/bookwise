@@ -15,9 +15,19 @@ export const Button = styled('button', {
 
 	cursor: 'pointer',
 
+	'&:disabled': {
+		cursor: 'not-allowed',
+	},
+
 	variants: {
 		variant: {
-			primary: {},
+			primary: {
+				'&:disabled': {
+					cursor: 'not-allowed',
+					background: '$gray400',
+					color: '$gray300',
+				},
+			},
 
 			outline: {
 				background: 'transparent',
@@ -25,6 +35,13 @@ export const Button = styled('button', {
 
 				'&:hover': {
 					background: '$gray700',
+				},
+
+				'&:disabled': {
+					cursor: 'not-allowed',
+					background: 'transparent',
+					border: '2px solid $gray400',
+					color: '$gray400',
 				},
 			},
 
@@ -34,6 +51,12 @@ export const Button = styled('button', {
 
 				'&:hover': {
 					background: 'rgba(131, 129, 217, 0.06)',
+				},
+
+				'&:disabled': {
+					cursor: 'not-allowed',
+					background: 'transparent',
+					color: '$gray400',
 				},
 			},
 		},

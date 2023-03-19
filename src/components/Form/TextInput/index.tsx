@@ -1,4 +1,3 @@
-import { FieldError } from 'react-hook-form';
 import { ComponentProps, forwardRef, ForwardRefRenderFunction } from 'react';
 
 import { InputTextContainer, TextInputContainer, Prefix, Input } from './styles';
@@ -7,13 +6,15 @@ export interface ITextInputProps extends ComponentProps<typeof Input> {
 	prefix?: string;
 }
 
-export function TextInput({ prefix, ...props }: ITextInputProps) {
+const TextInputBase: ForwardRefRenderFunction<HTMLInputElement, ITextInputProps> = ({ prefix, ...props }, ref) => {
 	return (
 		<InputTextContainer>
 			<TextInputContainer>
 				{!!prefix && <Prefix>{prefix}</Prefix>}
-				<Input {...props} />
+				<Input ref={ref} {...props} />
 			</TextInputContainer>
 		</InputTextContainer>
 	);
-}
+};
+
+export const TextInput = forwardRef(TextInputBase);

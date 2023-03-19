@@ -1,10 +1,10 @@
 import { Adapter } from 'next-auth/adapters';
 import { parseCookies, destroyCookie } from 'nookies';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextApiRequest, NextApiResponse, NextPageContext } from 'next';
 
 import { prisma } from '../prisma';
 
-export function PrismaAdapter(req: NextApiRequest, res: NextApiResponse): Adapter {
+export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res: NextApiResponse | NextPageContext['res']): Adapter {
 	return {
 		async createUser(user) {
 			const { '@bookwise:userId': userIdOnCookies } = parseCookies({ req });

@@ -1,38 +1,46 @@
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { signIn, useSession } from 'next-auth/react';
+import { useSession, getProviders } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { Multistep } from '@/components/Multistep';
 import { RegisterUserForm } from './registerUserForm';
 import { Button } from '@/components/Action/Button/buttons';
 
-import { ArrowCircleLeft, ArrowCircleRight, Check } from 'phosphor-react';
+import { ArrowCircleRight, Check } from 'phosphor-react';
 
 import appCover from '../../assets/capa.png';
 import githubIcon from '../../assets/icons_github.svg';
 import googleIcon from '../../assets/logos_google-icon.svg';
 import rocketLaunchIcon from '../../assets/RocketLaunch.svg';
 
-import { HomeContainer, Preview, LoginContainer, LoginGroup, LoginBox, LoginOptionBox, RegisterUserContainer, ErrorMessage } from './styles';
+import { HomeContainer, Preview, LoginContainer, LoginGroup, LoginBox, LoginOptionBox, RegisterUserContainer } from './styles';
+import { ErrorMessage } from '@/components/ErrorMessage';
+import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
+import { unstable_getServerSession } from 'next-auth';
 
 export default function SignIn() {
 	const router = useRouter();
 	const session = useSession();
+
+	console.log('session: ', session);
 
 	const [selectedTab, setSelectedTab] = useState('authentications');
 
 	const hasAuthError = !!router.query.error;
 	const isSigedIn = session.status === 'authenticated';
 
-	async function handleSignInGoogle() {
-		await signIn('google');
-	}
-
 	function loginAsGuest() {
 		router.push('/home');
 	}
+
+	useEffect(() => {
+		if (isSigedIn) {
+			router.push('/home');
+		}
+	}, [session]);
 
 	return (
 		<HomeContainer>
@@ -60,7 +68,7 @@ export default function SignIn() {
 							<LoginBox>
 								{selectedTab === 'authentications' ? (
 									<>
-										<LoginOptionBox onClick={() => handleSignInGoogle()} disabled={isSigedIn}>
+										<LoginOptionBox onClick={() => setSelectedTab('registerUser')} disabled={isSigedIn}>
 											<Image src={googleIcon} quality={100} height={32} priority alt='Imagem do logo da google' />
 											{isSigedIn ? (
 												<div className='connected'>
@@ -93,18 +101,14 @@ export default function SignIn() {
 									</>
 								) : (
 									<RegisterUserContainer>
-										<RegisterUserForm />
-										<Button size='sm' onClick={() => setSelectedTab('authentications')}>
-											<ArrowCircleLeft size={32} weight='fill' />
-										</Button>
-										<Button size='sm'>Registrar</Button>
+										<RegisterUserForm onClickEvent={() => setSelectedTab('authentications')} />
 									</RegisterUserContainer>
 								)}
 							</LoginBox>
 						</motion.div>
 					</AnimatePresence>
 
-					{hasAuthError && <ErrorMessage>Falha ao se conectar ao Google, verifique se você habilitou as permissões de acesso.</ErrorMessage>}
+					{hasAuthError && <ErrorMessage>Falha ao se conectar ao Google, verifique se você habilitou as permissões de acesso</ErrorMessage>}
 				</LoginGroup>
 			</LoginContainer>
 		</HomeContainer>
