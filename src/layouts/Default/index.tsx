@@ -1,4 +1,7 @@
+import { Header } from '@/components/Header';
+import { NavBar } from '@/components/NavBar';
 import { ReactNode } from 'react';
+import { LayoutContainer, HeaderContainer, NavbarContainer, MainContainer, ASideBarContainer } from './styles';
 
 interface LayoutProps {
 	children: ReactNode;
@@ -6,11 +9,15 @@ interface LayoutProps {
 
 export default function DefaultLayout({ children }: LayoutProps) {
 	return (
-		<div>
-			<div>Nav Bar</div>
-			<div>Header</div>
-			<div>{children}</div>
-			<div>Side bar</div>
-		</div>
+		<LayoutContainer>
+			<HeaderContainer>
+				<Header />
+			</HeaderContainer>
+			<NavbarContainer>
+				<NavBar />
+			</NavbarContainer>
+			<MainContainer>{children}</MainContainer>
+			<ASideBarContainer>Side bar</ASideBarContainer>
+		</LayoutContainer>
 	);
 }
