@@ -28,7 +28,7 @@ export const NavbarContainer = styled('nav', {
 	flexDirection: 'column',
 	background: 'linear-gradient(180deg, #181C2A 0%, #252D4A 100%)',
 
-	borderRadius: '$sm',
+	borderRadius: 12,
 });
 
 export const MainContainer = styled('main', {
@@ -38,8 +38,6 @@ export const MainContainer = styled('main', {
 	maxWidth: 608,
 	width: '100%',
 	margin: '0   auto',
-
-	background: '$gray400',
 });
 
 export const ASideBarContainer = styled('aside', {

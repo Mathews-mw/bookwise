@@ -1,3 +1,5 @@
+import '../lib/dayjs';
+
 import type { AppProps } from 'next/app';
 import { Nunito } from '@next/font/google';
 import { SessionProvider } from 'next-auth/react';

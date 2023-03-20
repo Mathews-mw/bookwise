@@ -9,3 +9,9 @@ export const NavbarContainer = styled('div', {
 		marginBottom: '4rem',
 	},
 });
+
+export const NavLinksContainer = styled('div', {
+	display: 'flex',
+	flexDirection: 'column',
+	gap: '1rem',
+});
