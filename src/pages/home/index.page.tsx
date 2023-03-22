@@ -1,40 +1,31 @@
-import dayjs from 'dayjs';
-import Image from 'next/image';
 import { ReactElement } from 'react';
 
 import DefaultLayout from '@/layouts/Default';
+import { BookReviewCard } from './BookReviewCard';
+
+import { MainContainer, BreadcrumbTitle, ReviewsContainer } from './styles';
 
 import user1 from '../../assets/user1.jpg';
-import { MainContainer, BreadcrumbTitle, BookReviewCard, HeaderReview, ImageFrame } from './styles';
-import { StarsRating } from '@/components/StarsRating';
+import HobbitCover from '../../assets/o-hobbit.png';
 
 export default function Home() {
-	const publishedDate = dayjs().set('D', 17);
-	const publishedDateFormatted = publishedDate.format('DD[ de ]MMMM[ às ]HH:mm');
-	const publishedDistanceToNow = publishedDate.fromNow();
-
 	return (
 		<MainContainer>
 			<BreadcrumbTitle>
 				<span>Avaliações mais recentes</span>
 			</BreadcrumbTitle>
 
-			<BookReviewCard>
-				<HeaderReview>
-					<div className='profileInfos'>
-						<ImageFrame>
-							<Image src={user1} height={40} alt='Profile picture' />
-						</ImageFrame>
-						<div className='group'>
-							<span>Angela Vogl</span>
-							<time title={publishedDateFormatted} dateTime={publishedDate.toISOString()}>
-								{publishedDistanceToNow}
-							</time>
-						</div>
-					</div>
-					<StarsRating precision={1 / 2} />
-				</HeaderReview>
-			</BookReviewCard>
+			<ReviewsContainer>
+				<BookReviewCard
+					userName='Angela Vogl'
+					publishedDate='2023-03-21 20:15:00'
+					userAvatar={user1}
+					bookTitle='O Hobbit'
+					bookAuthor='J.R.R. Tolkien'
+					bookCover={HobbitCover}
+					comment='Semper et sapien proin vitae nisi. Feugiat neque integer donec et aenean posuere amet ultrices. Cras fermentum id pulvinar varius leo a in. Amet libero pharetra nunc elementum fringilla velit ipsum. Sed vulputate massa velit nibh. Semper et sapien proin vitae nisi. Feugiat neque integer donec et aenean posuere amet ultrices. Cras fermentum id pulvinar varius leo a in. Amet libero pharetra nunc elementum fringilla velit ipsum. Sed vulputate massa velit nibh.'
+				/>
+			</ReviewsContainer>
 		</MainContainer>
 	);
 }

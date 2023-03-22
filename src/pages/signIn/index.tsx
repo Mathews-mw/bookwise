@@ -1,12 +1,12 @@
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useSession, getProviders } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { Multistep } from '@/components/Multistep';
 import { RegisterUserForm } from './registerUserForm';
-import { Button } from '@/components/Action/Button/buttons';
+import { ErrorMessage } from '@/components/ErrorMessage';
 
 import { ArrowCircleRight, Check } from 'phosphor-react';
 
@@ -16,16 +16,10 @@ import googleIcon from '../../assets/logos_google-icon.svg';
 import rocketLaunchIcon from '../../assets/RocketLaunch.svg';
 
 import { HomeContainer, Preview, LoginContainer, LoginGroup, LoginBox, LoginOptionBox, RegisterUserContainer } from './styles';
-import { ErrorMessage } from '@/components/ErrorMessage';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
-import { unstable_getServerSession } from 'next-auth';
 
 export default function SignIn() {
 	const router = useRouter();
 	const session = useSession();
-
-	console.log('session: ', session);
 
 	const [selectedTab, setSelectedTab] = useState('authentications');
 

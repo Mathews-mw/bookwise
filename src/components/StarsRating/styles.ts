@@ -9,3 +9,15 @@ export const Container = styled('div', {
 
 	color: '$purple100',
 });
+
+export const StarsGroup = styled('div', {
+	position: 'relative',
+	cursor: 'pointer',
+});
+
+export const StarFilled = styled('div', {
+	overflow: 'hidden',
+	position: 'absolute',
+});
+
+export const StartEmpty = styled('div', {});

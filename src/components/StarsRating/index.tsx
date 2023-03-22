@@ -2,7 +2,7 @@ import { Star } from 'phosphor-react';
 import { MouseEvent, useRef, useState } from 'react';
 
 import { theme } from '@/styles';
-import { Container } from './styles';
+import { Container, StarsGroup, StarFilled, StartEmpty } from './styles';
 
 interface IStarsRatingProps {
 	precision?: number;
@@ -53,14 +53,15 @@ export function StarsRating({ precision = 1, totalStars = 5 }: IStarsRatingProps
 				const showRatingWithPrecision = isActiveRating && isRatingWithPrecision && isRatingEqualToIndex;
 
 				return (
-					<div key={index} style={{ position: 'relative', cursor: 'pointer' }}>
-						<div style={{ width: `${showRatingWithPrecision ? `${(activeState % 1) * 100}%` : '0%'}`, overflow: 'hidden', position: 'absolute' }}>
+					<StarsGroup key={index}>
+						<StarFilled style={{ width: `${showRatingWithPrecision ? `${(activeState % 1) * 100}%` : '0%'}` }}>
 							<Star size={22} weight='fill' />
-						</div>
-						<div style={{ color: `${showEmptyIcon ? theme.colors.purple100 : theme.colors.purple100}` }}>
+						</StarFilled>
+
+						<StartEmpty style={{ color: `${showEmptyIcon ? theme.colors.purple100 : theme.colors.purple100}` }}>
 							{showEmptyIcon ? <Star size={20} weight='regular' /> : <Star size={20} weight='fill' />}
-						</div>
-					</div>
+						</StartEmpty>
+					</StarsGroup>
 				);
 			})}
 		</Container>

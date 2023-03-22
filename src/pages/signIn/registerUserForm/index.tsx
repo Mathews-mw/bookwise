@@ -1,19 +1,18 @@
 import { z } from 'zod';
+import { useState } from 'react';
+import { AxiosError } from 'axios';
+import { useRouter } from 'next/router';
+import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { api } from '@/lib/axios';
+import { Spinner } from '@/components/Loaders/Spinner';
 import { TextInput } from '@/components/Form/TextInput';
+import { ErrorMessage } from '@/components/ErrorMessage';
 import { Button } from '@/components/Action/Button/buttons';
 
 import { Container, Form } from './styles';
-import { ErrorMessage } from '@/components/ErrorMessage';
-import { useState } from 'react';
-import { api } from '@/lib/axios';
-import { useRouter } from 'next/router';
-import { signIn } from 'next-auth/react';
-import { AxiosError } from 'axios';
-import { Spinner } from '@/components/Loaders/Spinner';
-import { ThreeDotsWave } from '@/components/Loaders/ThreeDotsWave';
 
 interface IRegisterUserFormProps {
 	onClickEvent: () => void;
@@ -58,7 +57,6 @@ export function RegisterUserForm({ onClickEvent }: IRegisterUserFormProps) {
 			});
 
 			setActionLoading(false);
-			console.log('gitAcess: ', gitAcess?.status);
 
 			await router.push('/home');
 		} catch (error) {

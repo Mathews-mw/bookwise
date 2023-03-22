@@ -1,12 +1,12 @@
 import '../lib/dayjs';
 
+import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import { Nunito } from '@next/font/google';
 import { SessionProvider } from 'next-auth/react';
 
 import { globalStyles } from '@/styles/global';
 import { ReactElement, ReactNode } from 'react';
-import { NextPage } from 'next';
 
 const nunito = Nunito({ subsets: ['latin'] });
 
