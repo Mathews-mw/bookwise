@@ -10,7 +10,6 @@ export const BookReviewContainer = styled('div', {
 	padding: '1.5rem',
 	borderRadius: '$md',
 
-	width: '100%',
 	maxWidth: 608,
 
 	background: '$gray700',
@@ -60,6 +59,8 @@ export const ReviewContainer = styled('div', {
 		display: 'flex',
 		flexDirection: 'column',
 		gap: '1.25rem',
+
+		height: 'auto',
 	},
 });
 

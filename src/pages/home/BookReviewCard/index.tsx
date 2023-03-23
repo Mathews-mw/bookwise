@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import * as Collapsible from '@radix-ui/react-collapsible';
 
-import { StarsRating } from '@/components/StarsRating';
+import { StarsRating } from '@/components/Rating/StarsRating';
 
 import { styled } from '@/styles';
 import {

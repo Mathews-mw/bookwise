@@ -3,10 +3,13 @@ import { styled } from '@/styles';
 export const Button = styled('button', {
 	all: 'unset',
 
+	display: 'flex',
+	justifyContent: 'center',
+	alignItems: 'center',
+
 	fontSize: '$md',
 	fontWeight: '$bold',
 	fontFamily: '$default',
-	textAlign: 'center',
 	minWidth: 120,
 	boxSizing: 'border-box',
 	padding: '0 $4',
@@ -46,7 +49,7 @@ export const Button = styled('button', {
 			},
 
 			ghost: {
-				background: 'transparent',
+				background: 'none',
 				border: 'none',
 
 				'&:hover': {
