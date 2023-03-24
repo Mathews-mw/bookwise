@@ -15,8 +15,10 @@ model User {
   avatar_url String?
   created_at DateTime @default(now())
 
-  accounts Account[]
-  sessions Session[]
+  accounts   Account[]
+  sessions   Session[]
+  RatingBook RatingBook[]
+  UserBook   UserBook[]
 
   @@map("users")
 }
@@ -38,6 +40,7 @@ model Account {
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@unique([provider, provider_account_id])
+  @@index([user_id])
   @@map("accounts")
 }
 
@@ -49,5 +52,70 @@ model Session {
 
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
+  @@index([user_id])
   @@map("sessions")
+}
+
+model Book {
+  id          String  @id @default(uuid())
+  title       String  @unique
+  author      String
+  total_pages Int?
+  cover_image String?
+
+  RatingBook   RatingBook[]
+  UserBook     UserBook[]
+  BookCategory BookCategory[]
+
+  @@map("books")
+}
+
+model Category {
+  id       String @id @default(uuid())
+  category String
+
+  BookCategory BookCategory[]
+
+  @@map("categories")
+}
+
+model BookCategory {
+  book_id     String
+  category_id String
+
+  book     Book     @relation(fields: [book_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  category Category @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  @@id([book_id, category_id])
+  @@index([book_id])
+  @@map("books_categories")
+}
+
+model RatingBook {
+  id         String    @id @default(uuid())
+  rating     Int
+  book_id    String
+  user_id    String
+  rated_at   DateTime  @default(now())
+  updated_at DateTime?
+
+  book Book @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  user User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  @@index([book_id, user_id])
+  @@map("rating_books")
+}
+
+model UserBook {
+  id               String   @id @default(uuid())
+  user_id          String
+  book_id          String
+  has_already_read Boolean?
+  is_reading       Boolean?
+
+  book Book @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  user User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  @@index([user_id, book_id])
+  @@map("users_books")
 }
