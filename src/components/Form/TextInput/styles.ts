@@ -10,6 +10,7 @@ export const TextInputContainer = styled('div', {
 	border: '2px solid $gray500',
 	display: 'flex',
 	alignItems: 'center',
+	width: '100%',
 
 	transition: 'all 200ms ease-in-out',
 

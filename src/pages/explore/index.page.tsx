@@ -1,15 +1,15 @@
+import { GetStaticProps } from 'next';
 import { ReactElement, useState } from 'react';
 
-import { BookCard } from './BookCard';
-import DefaultLayout from '@/layouts/Default';
-
-import { ExploreContainer, HeaderContainer, CategoriesContainer, CategoryTag, BooksListContainer } from './styles';
-import { Header } from '@/components/Header';
-import { Binoculars, MagnifyingGlass } from '@phosphor-icons/react';
-import { TextInput } from '@/components/Form/TextInput';
-import { GetStaticProps } from 'next';
 import { prisma } from '@/lib/prisma';
+import { BookCard } from './BookCard';
 import { Category } from '@prisma/client';
+import { Header } from '@/components/Header';
+import DefaultLayout from '@/layouts/Default';
+import { TextInput } from '@/components/Form/TextInput';
+
+import { Binoculars, MagnifyingGlass, MinusCircle, PlusCircle } from '@phosphor-icons/react';
+import { ExploreContainer, HeaderContainer, CategoriesContainer, CategoryTag, BooksListContainer, ShowAllButton } from './styles';
 
 interface IExploreProps {
 	categories: Category[];
@@ -35,7 +35,7 @@ export default function Explore({ categories }: IExploreProps) {
 			</HeaderContainer>
 
 			<CategoriesContainer>
-				<CategoryTag onClick={() => setIsShortList(!isShortList)}>Todos</CategoryTag>
+				<CategoryTag>Todos</CategoryTag>
 				{categoriesList.map((tag) => {
 					return (
 						<CategoryTag key={tag.id} className={select === tag.category ? 'selected' : ''} onClick={() => setSelected(tag.category)}>
@@ -43,6 +43,7 @@ export default function Explore({ categories }: IExploreProps) {
 						</CategoryTag>
 					);
 				})}
+				<ShowAllButton onClick={() => setIsShortList(!isShortList)}>{isShortList ? <PlusCircle size={28} /> : <MinusCircle size={28} />}</ShowAllButton>
 			</CategoriesContainer>
 
 			<BooksListContainer>

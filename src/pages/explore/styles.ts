@@ -55,3 +55,21 @@ export const BooksListContainer = styled('div', {
 	gridGap: '1.25rem',
 	gridTemplateColumns: 'repeat(auto-fit, minmax(318px, 1fr))',
 });
+
+export const ShowAllButton = styled('button', {
+	all: 'unset',
+	display: 'flex',
+	alignItems: 'center',
+
+	background: 'transparent',
+	color: '$purple100',
+	cursor: 'pointer',
+
+	fontWeight: '$bold',
+
+	marginLeft: '$1',
+
+	'&:hover': {
+		color: '$purple200',
+	},
+});

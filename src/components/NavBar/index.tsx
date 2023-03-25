@@ -3,9 +3,10 @@ import Image from 'next/image';
 import { NavLink } from './NavLink';
 
 import { NavbarContainer, NavLinksContainer } from './styles';
-import { Binoculars, ChartLineUp, User } from '@phosphor-icons/react';
+import { Binoculars, ChartLineUp, Notebook, User } from '@phosphor-icons/react';
 
 import Logo from '../../assets/Logo.png';
+import newBook from '../../assets/new-book.svg';
 
 export function NavBar() {
 	return (
@@ -24,6 +25,13 @@ export function NavBar() {
 					<>
 						<Binoculars size={24} />
 						<span>Explorar</span>
+					</>
+				</NavLink>
+
+				<NavLink href={'/register'}>
+					<>
+						<Notebook size={24} />
+						<span>Cadastrar</span>
 					</>
 				</NavLink>
 

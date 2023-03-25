@@ -1,4 +1,4 @@
-import { IconProps, MagnifyingGlass } from 'phosphor-react';
+import { IconProps } from '@phosphor-icons/react';
 import { ComponentProps, forwardRef, ForwardRefRenderFunction } from 'react';
 
 import { InputTextContainer, TextInputContainer, Prefix, Input } from './styles';
