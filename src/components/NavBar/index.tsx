@@ -1,9 +1,11 @@
 import Image from 'next/image';
-import { Binoculars, ChartLineUp } from 'phosphor-react';
+
+import { NavLink } from './NavLink';
+
+import { NavbarContainer, NavLinksContainer } from './styles';
+import { Binoculars, ChartLineUp, User } from '@phosphor-icons/react';
 
 import Logo from '../../assets/Logo.png';
-import { NavLink } from './NavLink';
-import { NavbarContainer, NavLinksContainer } from './styles';
 
 export function NavBar() {
 	return (
@@ -22,6 +24,13 @@ export function NavBar() {
 					<>
 						<Binoculars size={24} />
 						<span>Explorar</span>
+					</>
+				</NavLink>
+
+				<NavLink href={'/perfil'}>
+					<>
+						<User size={24} />
+						<span>Perfil</span>
 					</>
 				</NavLink>
 			</NavLinksContainer>

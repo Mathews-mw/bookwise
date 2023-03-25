@@ -1,7 +1,7 @@
-import { Star } from 'phosphor-react';
+import { theme } from '@/styles';
+import { Star } from '@phosphor-icons/react';
 import { MouseEvent, useRef, useState } from 'react';
 
-import { theme } from '@/styles';
 import { Container, StarsGroup, StarFilled, StartEmpty } from './styles';
 
 interface IStarsRatingProps {

@@ -8,14 +8,13 @@ import { Multistep } from '@/components/Multistep';
 import { RegisterUserForm } from './registerUserForm';
 import { ErrorMessage } from '@/components/ErrorMessage';
 
-import { ArrowCircleRight, Check } from 'phosphor-react';
-
 import appCover from '../../assets/capa.png';
 import githubIcon from '../../assets/icons_github.svg';
 import googleIcon from '../../assets/logos_google-icon.svg';
 import rocketLaunchIcon from '../../assets/RocketLaunch.svg';
 
 import { HomeContainer, Preview, LoginContainer, LoginGroup, LoginBox, LoginOptionBox, RegisterUserContainer } from './styles';
+import { ArrowCircleRight, Check } from '@phosphor-icons/react';
 
 export default function SignIn() {
 	const router = useRouter();

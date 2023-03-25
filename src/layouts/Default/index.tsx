@@ -13,15 +13,6 @@ interface LayoutProps {
 export default function DefaultLayout({ children }: LayoutProps) {
 	return (
 		<LayoutContainer>
-			<HeaderContainer>
-				<div className='gridLayout'>
-					<div className='headerAdjustment'>
-						<Header />
-					</div>
-					<div></div>
-				</div>
-			</HeaderContainer>
-
 			<NavbarContainer>
 				<NavBar />
 			</NavbarContainer>

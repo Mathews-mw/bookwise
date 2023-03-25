@@ -3,9 +3,8 @@ import { ReactElement } from 'react';
 import DefaultLayout from '@/layouts/Default';
 import { TrendingBooks } from './TredingBooks';
 import { BookReviewCard } from './BookReviewCard';
-import { Button } from '@/components/Action/Button/buttons';
 
-import { CaretRight } from 'phosphor-react';
+import { CaretRight, ChartLineUp } from '@phosphor-icons/react';
 import { MainContainer, BreadcrumbTitleContainer, RecentViewsContainer, ReviewsContainer, TrendingContainer, TrandingBooksList, NavButton } from './styles';
 
 import user1 from '../../assets/user1.jpg';
@@ -18,11 +17,17 @@ import FimDaEternidade from '../../assets/o-fim-da-eternidade.png';
 import PragmaticProgrammer from '../../assets/o-programador-pragmatico.png';
 import GuiaGalaxia from '../../assets/o-guia-do-mochileiro-das-galaxias.png';
 import Habitos from '../../assets/14-habitos-de-desenvolvedores-altamente-produtivos.png';
+import { Header } from '@/components/Header';
 
 export default function Home() {
 	return (
 		<MainContainer>
 			<RecentViewsContainer>
+				<Header css={{ padding: '40px 0' }}>
+					<ChartLineUp size={22} />
+					<h3>Início</h3>
+				</Header>
+
 				<BreadcrumbTitleContainer>
 					<span>Avaliações mais recentes</span>
 				</BreadcrumbTitleContainer>

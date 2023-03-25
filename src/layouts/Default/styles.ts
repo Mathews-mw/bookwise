@@ -3,7 +3,7 @@ import { styled } from '@/styles';
 export const LayoutContainer = styled('div', {
 	display: 'grid',
 	gridTemplateAreas: `
-    "nav header" 
+    "nav main" 
     "nav main"
 		"footer footer"
   `,
@@ -13,7 +13,7 @@ export const LayoutContainer = styled('div', {
 
 	height: '100%',
 
-	margin: '1.25rem 6rem 1.25rem 1.25rem',
+	margin: '1.25rem',
 });
 
 export const HeaderContainer = styled('header', {

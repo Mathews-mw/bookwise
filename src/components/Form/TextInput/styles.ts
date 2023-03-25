@@ -1,23 +1,30 @@
-import { styled } from '@/styles';
+import { styled, theme } from '@/styles';
 
 export const InputTextContainer = styled('div', {});
 
 export const TextInputContainer = styled('div', {
 	backgroundColor: '$gray800',
-	padding: '$3 $4',
+	padding: '14px 20px',
 	borderRadius: '$sm',
 	boxSizing: 'border-box',
 	border: '2px solid $gray500',
 	display: 'flex',
-	alignItems: 'baseline',
+	alignItems: 'center',
+
+	transition: 'all 200ms ease-in-out',
 
 	'&:has(input:focus)': {
 		borderColor: '$purple200',
+		boxShadow: '0 0 6px rgba(42, 40, 121, 1)',
 	},
 
 	'&:has(input:disabled)': {
 		opacity: 0.5,
 		cursor: 'not-allowed',
+	},
+
+	svg: {
+		color: '$gray500',
 	},
 });
 
@@ -45,7 +52,7 @@ export const Input = styled('input', {
 		cursor: 'not-allowed',
 	},
 
-	'&:placeholder': {
+	'&::placeholder': {
 		color: '$gray400',
 	},
 });

@@ -72,7 +72,7 @@ model Book {
 
 model Category {
   id       String @id @default(uuid())
-  category String
+  category String @unique
 
   BookCategory BookCategory[]
 

@@ -1,6 +1,6 @@
 import { theme } from '@/styles';
-import { Star } from 'phosphor-react';
-import { useState } from 'react';
+
+import { Star } from '@phosphor-icons/react';
 import { Container, StarsGroup, StarFilled, StartEmpty } from './styles';
 
 interface IStarsRatingView {

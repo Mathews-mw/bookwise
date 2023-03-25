@@ -49,6 +49,7 @@ export const ReviewsContainer = styled('div', {
 export const TrendingContainer = styled('div', {
 	display: 'flex',
 	flexDirection: 'column',
+	marginTop: '6.625rem',
 
 	maxWidth: '20.25rem',
 });
