@@ -4,6 +4,7 @@ export const BookCardContainer = styled('div', {
 	display: 'flex',
 	gap: 20,
 	padding: '18px 20px',
+	position: 'relative',
 
 	background: '$gray700',
 	borderRadius: '$md',
@@ -25,9 +26,7 @@ export const BookInfos = styled('div', {
 
 	span: {
 		fontWeight: 'bold',
-		whiteSpace: 'nowrap',
-		overflow: 'hidden',
-		textOverflow: 'ellipsis',
+		wordWrap: 'break-word',
 	},
 
 	i: {
@@ -36,4 +35,16 @@ export const BookInfos = styled('div', {
 		overflow: 'hidden',
 		textOverflow: 'ellipsis',
 	},
+});
+
+export const AlreadyReadContainer = styled('span', {
+	position: 'absolute',
+	background: '$green300',
+	color: '$green100',
+	fontSize: 10,
+	fontWeight: 700,
+	padding: '4px 10px',
+	borderRadius: '0 0 $md 0',
+	bottom: 0,
+	right: 0,
 });

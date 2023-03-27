@@ -31,3 +31,26 @@ export const InputsGroup = styled('div', {
 	gridGap: '1rem',
 	gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
 });
+
+export const UploadContainer = styled('div', {
+	display: 'flex',
+	flexDirection: 'column',
+	gap: '$3',
+	maxWidth: 280,
+
+	img: {
+		borderRadius: '$md',
+	},
+
+	'.imgDisplay': {
+		display: 'flex',
+		flexDirection: 'column',
+		gap: 8,
+		color: '$gray400',
+	},
+});
+
+export const SubmitButtonContainer = styled('div', {
+	display: 'flex',
+	justifyContent: 'end',
+});

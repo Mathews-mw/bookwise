@@ -1,28 +1,34 @@
-import { ReactElement } from 'react';
-import Select from 'react-select';
-import makeAnimated from 'react-select/animated';
-
-import DefaultLayout from '@/layouts/Default';
-
-import { RegisterCard, RegisterContainer, BreadcrumbTitleContainer, Form, InputsGroup } from './styles';
-import { Header } from '@/components/Header';
-import { Notebook } from '@phosphor-icons/react';
-import { TextInput } from '@/components/Form/TextInput';
-import { theme } from '@/styles';
-import { Dropdown } from '@/components/Form/Dropdown';
+import { z } from 'zod';
+import Image from 'next/image';
+import { GetStaticProps } from 'next';
+import { motion } from 'framer-motion';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Button } from '@/components/Action/Button/buttons';
-import { GetStaticProps } from 'next';
+import { ReactElement, useEffect, useState } from 'react';
+
+import { api } from '@/lib/axios';
 import { prisma } from '@/lib/prisma';
 import { Category } from '@prisma/client';
+import { Header } from '@/components/Header';
+import DefaultLayout from '@/layouts/Default';
+import { Dropdown } from '@/components/Form/Dropdown';
+import { Spinner } from '@/components/Loaders/Spinner';
+import { TextInput } from '@/components/Form/TextInput';
 import { ErrorMessage } from '@/components/ErrorMessage';
+import { Progress } from '@/components/Feedback/Progress';
+import { Button } from '@/components/Action/Button/buttons';
+import { ShowErrorRequest } from '@/utils/ShowErrorRequest';
+import { ShowSuccessRequest } from '@/utils/ShowSuccessRequest';
+
+import { Notebook, UploadSimple } from '@phosphor-icons/react';
+import { RegisterCard, RegisterContainer, BreadcrumbTitleContainer, Form, InputsGroup, UploadContainer, SubmitButtonContainer } from './styles';
 
 interface IRegisterProps {
 	categories: Category[];
 }
 
+const MAX_FILE_SIZE = 500000;
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 const registerFormSchema = z.object({
 	title: z.string().min(1, { message: '*Campo Obrigatório' }),
 	author: z.string().min(1, { message: '*Campo Obrigatório' }),
@@ -30,7 +36,11 @@ const registerFormSchema = z.object({
 		.string()
 		.min(1, { message: '*Campo Obrigatório' })
 		.transform((value) => Number(value)),
-	coverImage: z.optional(z.any()),
+	coverImage: z
+		.any()
+		.refine((files) => files?.length === 1, 'Imagem é obrigatória.')
+		.refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `Tamanho máximodo suportado do arquivo é de 5MB.`)
+		.refine((files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type), 'apenas os formatos .jpg, .jpeg, .png, .svg e .webp são aceitos.'),
 	categories: z.array(z.object({ value: z.string(), label: z.string() }), { required_error: '*Campo Obrigatório' }).min(1, { message: '*Campo Obrigatório' }),
 });
 
@@ -41,18 +51,92 @@ export default function Register({ categories }: IRegisterProps) {
 		handleSubmit,
 		register,
 		control,
+		watch,
+		reset,
 		formState: { errors, isSubmitting },
 	} = useForm<registerFormData>({
 		resolver: zodResolver(registerFormSchema),
 	});
 
+	const [submtingFormLoading, setSubmtingFormLoading] = useState(false);
+
+	const [imageName, setImageName] = useState<any>();
+	const [imageDisplay, setImageDisplay] = useState<any>('');
+	const [imageIsLoading, setImageIsLoading] = useState(false);
+
 	const categoriesDropDownMenu = categories.map((category) => {
 		return { value: category.id, label: category.category };
 	});
 
-	function handleRegisterBook(data: registerFormData) {
-		console.log('data: ', data);
+	function convertBase64(file: Blob) {
+		return new Promise((resolve, reject) => {
+			const fileReader = new FileReader();
+			fileReader.readAsDataURL(file);
+
+			fileReader.onload = () => {
+				resolve(fileReader.result);
+			};
+
+			fileReader.onerror = (error) => {
+				reject(error);
+			};
+		});
 	}
+
+	const fileUpload = watch('coverImage');
+
+	async function uploadImage() {
+		if (fileUpload) {
+			const base64 = await convertBase64(fileUpload[0]);
+
+			setImageIsLoading(true);
+			const timer = setTimeout(() => {
+				setImageDisplay(base64);
+				setImageName(fileUpload[0]);
+
+				setImageIsLoading(false);
+			}, 1200);
+			return () => clearTimeout(timer);
+		}
+	}
+
+	async function handleRegisterBook(data: registerFormData) {
+		const config = {
+			headers: { 'content-type': 'multipart/form-data' },
+			onUploadProgress: (event: any) => {
+				console.log(`Current progress:`, Math.round((event.loaded * 100) / event.total));
+			},
+		};
+
+		const formData = new FormData();
+
+		try {
+			setSubmtingFormLoading(true);
+
+			formData.append('cover_image', fileUpload[0]);
+			formData.append('author', data.author);
+			formData.append('title', data.title);
+			formData.append('total_pages', data.totalPages.toString());
+			formData.append('categories', JSON.stringify(data.categories));
+
+			const { data: result } = await api.post('/books/register', formData, config);
+
+			setSubmtingFormLoading(false);
+			ShowSuccessRequest(result);
+			reset();
+			setImageDisplay('');
+			setImageName('');
+		} catch (error) {
+			setSubmtingFormLoading(false);
+			ShowErrorRequest(error);
+		}
+	}
+
+	useEffect(() => {
+		if (fileUpload?.length > 0) {
+			uploadImage();
+		}
+	}, [fileUpload]);
 
 	return (
 		<RegisterContainer>
@@ -108,9 +192,32 @@ export default function Register({ categories }: IRegisterProps) {
 						/>
 					</InputsGroup>
 
-					<Button type='submit' disabled={isSubmitting}>
-						Cadastrar
-					</Button>
+					<UploadContainer>
+						<Button as='label' type='button' colorScheme='white'>
+							<UploadSimple size={22} />
+							Inserir imagem
+							<input hidden accept='image/*' type='file' {...register('coverImage')} />
+						</Button>
+
+						{imageDisplay && !imageIsLoading && (
+							<motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
+								<div className='imgDisplay'>
+									<Image src={imageDisplay} alt='' width={108} height={152} />
+									<span>{imageName.name}</span>
+								</div>
+							</motion.div>
+						)}
+						{imageIsLoading && <Progress />}
+
+						{errors.coverImage && <ErrorMessage>{errors.coverImage.message?.toString()}</ErrorMessage>}
+					</UploadContainer>
+
+					<SubmitButtonContainer>
+						<Button type='submit' disabled={isSubmitting || submtingFormLoading || imageIsLoading}>
+							Cadastrar
+							{submtingFormLoading && <Spinner />}
+						</Button>
+					</SubmitButtonContainer>
 				</Form>
 			</RegisterCard>
 		</RegisterContainer>
@@ -122,7 +229,11 @@ Register.getLayout = function getLayout(page: ReactElement) {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-	const categories = await prisma.category.findMany();
+	const categories = await prisma.category.findMany({
+		orderBy: {
+			category: 'asc',
+		},
+	});
 
 	return {
 		props: {

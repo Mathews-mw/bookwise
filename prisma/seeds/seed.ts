@@ -54,6 +54,12 @@ const categoriesData: Prisma.CategoryCreateInput[] = [
   },
   {
     category: 'Graphic novel'
+  },
+  {
+    category: 'Ciência'
+  },
+  {
+    category: 'Astronomia'
   }
 ]
 

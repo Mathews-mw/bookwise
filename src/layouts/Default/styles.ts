@@ -43,7 +43,7 @@ export const NavbarContainer = styled('nav', {
 	gridArea: 'nav',
 	display: 'flex',
 	flexDirection: 'column',
-	maxHeight: '61.75rem',
+	height: 'calc(100vh - 2.5rem)',
 
 	background: 'linear-gradient(180deg, #181C2A 0%, #252D4A 100%)',
 	borderRadius: 12,

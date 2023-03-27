@@ -1,21 +1,29 @@
-import { GetStaticProps } from 'next';
+import { GetServerSideProps, GetStaticProps } from 'next';
 import { ReactElement, useState } from 'react';
 
 import { prisma } from '@/lib/prisma';
 import { BookCard } from './BookCard';
-import { Category } from '@prisma/client';
+import { Book, BookCategory, Category, RatingBook } from '@prisma/client';
 import { Header } from '@/components/Header';
 import DefaultLayout from '@/layouts/Default';
 import { TextInput } from '@/components/Form/TextInput';
 
 import { Binoculars, MagnifyingGlass, MinusCircle, PlusCircle } from '@phosphor-icons/react';
 import { ExploreContainer, HeaderContainer, CategoriesContainer, CategoryTag, BooksListContainer, ShowAllButton } from './styles';
+import { getServerSession, unstable_getServerSession } from 'next-auth';
+import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
+import { useSession } from 'next-auth/react';
 
 interface IExploreProps {
 	categories: Category[];
+	books: Array<Book & { bookCategory: BookCategory[]; ratingBook: RatingBook[] }>;
 }
 
-export default function Explore({ categories }: IExploreProps) {
+export default function Explore({ categories, books }: IExploreProps) {
+	const session = useSession();
+
+	console.log('session: ', session);
+
 	const [select, setSelected] = useState('');
 	const [isShortList, setIsShortList] = useState(true);
 
@@ -47,8 +55,8 @@ export default function Explore({ categories }: IExploreProps) {
 			</CategoriesContainer>
 
 			<BooksListContainer>
-				{Array.from({ length: 15 }).map((_, i) => {
-					return <BookCard key={i} />;
+				{books.map((book) => {
+					return <BookCard key={book.id} book={book} />;
 				})}
 			</BooksListContainer>
 		</ExploreContainer>
@@ -60,11 +68,25 @@ Explore.getLayout = function getLayout(page: ReactElement) {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-	const categories = await prisma.category.findMany();
+	const categories = await prisma.category.findMany({
+		orderBy: {
+			category: 'asc',
+		},
+	});
+	const books = await prisma.book.findMany({
+		include: {
+			BookCategory: true,
+			RatingBook: true,
+		},
+		orderBy: {
+			title: 'asc',
+		},
+	});
 
 	return {
 		props: {
 			categories,
+			books,
 		},
 		revalidate: 60 * 60 * 24, // 1 day
 	};

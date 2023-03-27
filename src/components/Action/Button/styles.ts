@@ -6,6 +6,7 @@ export const Button = styled('button', {
 	display: 'flex',
 	justifyContent: 'center',
 	alignItems: 'center',
+	gap: 16,
 
 	fontSize: '$md',
 	fontWeight: '$bold',
