@@ -17,8 +17,8 @@ model User {
 
   accounts   Account[]
   sessions   Session[]
-  RatingBook RatingBook[]
-  UserBook   UserBook[]
+  ratingBook RatingBook[]
+  userBook   UserBook[]
 
   @@map("users")
 }
@@ -63,9 +63,9 @@ model Book {
   total_pages Int?
   cover_image String?
 
-  RatingBook   RatingBook[]
-  UserBook     UserBook[]
-  BookCategory BookCategory[]
+  ratingBook   RatingBook[]
+  userBook     UserBook[]
+  bookCategory BookCategory[]
 
   @@map("books")
 }
@@ -74,7 +74,7 @@ model Category {
   id       String @id @default(uuid())
   category String @unique
 
-  BookCategory BookCategory[]
+  bookCategory BookCategory[]
 
   @@map("categories")
 }

@@ -1,6 +1,6 @@
 import { styled } from '@/styles';
 
-export const Button = styled('button', {
+export const ButtonElement = styled('button', {
 	all: 'unset',
 
 	display: 'flex',
@@ -11,9 +11,8 @@ export const Button = styled('button', {
 	fontSize: '$md',
 	fontWeight: '$bold',
 	fontFamily: '$default',
-	minWidth: 120,
 	boxSizing: 'border-box',
-	padding: '0 $4',
+	padding: '0 $6',
 
 	borderRadius: '$sm',
 
@@ -50,11 +49,11 @@ export const Button = styled('button', {
 			},
 
 			ghost: {
-				background: 'none',
+				background: 'none !important',
 				border: 'none',
 
 				'&:hover': {
-					background: 'rgba(131, 129, 217, 0.06)',
+					background: 'rgba(131, 129, 217, 0.02) !important',
 				},
 
 				'&:disabled': {
@@ -88,6 +87,7 @@ export const Button = styled('button', {
 		size: {
 			sm: {
 				height: 38,
+				padding: '0 $4',
 			},
 
 			md: {

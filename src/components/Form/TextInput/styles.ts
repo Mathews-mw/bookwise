@@ -12,7 +12,7 @@ export const TextInputContainer = styled('div', {
 	alignItems: 'center',
 	width: '100%',
 
-	transition: 'all 200ms ease-in-out',
+	transition: 'all 100ms ease-in-out',
 
 	'&:has(input:focus)': {
 		borderColor: '$purple200',

@@ -1,7 +1,7 @@
 import { ComponentProps, ElementType, ReactNode } from 'react';
-import { Button as StichesButton } from './styles';
+import { ButtonElement } from './styles';
 
-export interface IButtonProps extends ComponentProps<typeof StichesButton> {
+export interface IButtonProps extends ComponentProps<typeof ButtonElement> {
 	children: ReactNode;
 	variant?: 'outline' | 'primary' | 'ghost';
 	colorScheme?: 'purple' | 'white';
@@ -11,8 +11,8 @@ export interface IButtonProps extends ComponentProps<typeof StichesButton> {
 
 export function Button({ children, variant, colorScheme, size, as, ...props }: IButtonProps) {
 	return (
-		<StichesButton as={as} variant={variant} colorScheme={colorScheme} size={size} {...props}>
+		<ButtonElement as={as} variant={variant} colorScheme={colorScheme} size={size} {...props}>
 			{children}
-		</StichesButton>
+		</ButtonElement>
 	);
 }

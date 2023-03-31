@@ -9,6 +9,8 @@ export const BookCardContainer = styled('div', {
 	background: '$gray700',
 	borderRadius: '$md',
 
+	cursor: 'pointer',
+
 	'.group': {
 		display: 'flex',
 		flexDirection: 'column',
@@ -23,6 +25,8 @@ export const BookInfos = styled('div', {
 	fontSize: '14px',
 
 	maxWidth: 200,
+	width: '100%',
+	height: '100%',
 
 	span: {
 		fontWeight: 'bold',
