@@ -9,8 +9,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	const search = String(req.query.search);
 	const { categoriesSearch } = req.query;
 
-	console.log('query: ', req.query);
-
 	try {
 		const books = await prisma.book.findMany({
 			where: {
@@ -41,7 +39,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				},
 			},
 			include: {
-				bookCategory: true,
+				bookCategory: {
+					select: {
+						book_id: true,
+						category_id: true,
+						category: {
+							select: {
+								category: true,
+							},
+						},
+					},
+				},
 				ratingBook: true,
 			},
 			orderBy: {

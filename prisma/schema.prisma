@@ -19,6 +19,7 @@ model User {
   sessions   Session[]
   ratingBook RatingBook[]
   userBook   UserBook[]
+  BookReview BookReview[]
 
   @@map("users")
 }
@@ -66,6 +67,7 @@ model Book {
   ratingBook   RatingBook[]
   userBook     UserBook[]
   bookCategory BookCategory[]
+  bookReview   BookReview[]
 
   @@map("books")
 }
@@ -93,7 +95,7 @@ model BookCategory {
 
 model RatingBook {
   id         String    @id @default(uuid())
-  rating     Int
+  rating     Decimal   @db.Decimal(10, 2)
   book_id    String
   user_id    String
   rated_at   DateTime  @default(now())
@@ -106,12 +108,27 @@ model RatingBook {
   @@map("rating_books")
 }
 
+model BookReview {
+  id         String    @id @default(uuid())
+  review     String
+  book_id    String
+  user_id    String
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  book Book @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  user User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  @@map("books_reviews")
+}
+
 model UserBook {
   id               String   @id @default(uuid())
   user_id          String
   book_id          String
   has_already_read Boolean?
   is_reading       Boolean?
+  wish_read        Boolean?
 
   book Book @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
   user User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade)

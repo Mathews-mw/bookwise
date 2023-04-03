@@ -3,7 +3,7 @@ import { FieldError } from 'react-hook-form';
 import { ErrorMessageContainer } from './styles';
 
 interface IErrorMessageProps {
-	children: ReactNode;
+	children?: ReactNode;
 	error?: FieldError;
 }
 

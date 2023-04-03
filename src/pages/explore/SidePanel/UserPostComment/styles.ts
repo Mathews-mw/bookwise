@@ -42,14 +42,18 @@ export const ImageFrame = styled('div', {
 	},
 });
 
-export const TextComment = styled('div', {
-	'.btn-group': {
+export const TextComment = styled('form', {
+	'.group-elements': {
 		display: 'flex',
-		justifyContent: 'end',
-
-		gap: 8,
-		width: '100%',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		widows: '100%',
 
 		marginTop: 8,
+	},
+
+	'.btn-group': {
+		display: 'flex',
+		gap: 8,
 	},
 });

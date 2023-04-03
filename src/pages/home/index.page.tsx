@@ -24,7 +24,7 @@ export default function Home() {
 		<MainContainer>
 			<RecentViewsContainer>
 				<Header css={{ padding: '40px 0' }}>
-					<ChartLineUp size={22} />
+					<ChartLineUp size={32} />
 					<h3>Início</h3>
 				</Header>
 

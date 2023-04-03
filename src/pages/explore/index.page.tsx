@@ -1,5 +1,5 @@
 import qs from 'qs';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps, GetStaticProps } from 'next';
 import debounce from 'lodash/debounce';
 import Drawer from 'react-modern-drawer';
 import { useQuery } from '@tanstack/react-query';
@@ -18,13 +18,20 @@ import { Book, BookCategory, Category, RatingBook } from '@prisma/client';
 
 import { Binoculars, MagnifyingGlass, MinusCircle, PlusCircle } from '@phosphor-icons/react';
 import { ExploreContainer, HeaderContainer, CategoriesContainer, CategoryTag, BooksListContainer, ShowAllButton } from './styles';
+import { getServerSession, unstable_getServerSession } from 'next-auth';
+import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
+import { Session } from 'next-auth/core/types';
 
 interface IExploreProps {
 	categories: Category[];
 }
 
-interface Books extends Book {
-	bookCategory: BookCategory[];
+interface IBookCategory extends BookCategory {
+	category: Category;
+}
+
+interface IBook extends Book {
+	bookCategory: IBookCategory[];
 	ratingBook: RatingBook[];
 }
 
@@ -36,6 +43,7 @@ export default function Explore({ categories }: IExploreProps) {
 	const [delayQuerySearch, setDelayQuerySearch] = useState('');
 	const [searchInputValue, setSearchInputValue] = useState('');
 	const [selectCategories, setSelectCategories] = useState<string[]>([]);
+	const [selectedBook, setSelectedBook] = useState<IBook>();
 
 	const toggleDrawer = () => {
 		setIsOpen((prevState) => !prevState);
@@ -54,7 +62,7 @@ export default function Explore({ categories }: IExploreProps) {
 		}
 	}
 
-	const { data: books, isFetching } = useQuery<Books[]>(['searchBook', delayQuerySearch, selectCategories], async () => {
+	const { data: books, isFetching } = useQuery<IBook[]>(['searchBook', delayQuerySearch, selectCategories], async () => {
 		const { data } = await api.get('/books', {
 			params: {
 				search: delayQuerySearch,
@@ -118,13 +126,21 @@ export default function Explore({ categories }: IExploreProps) {
 
 				<BooksListContainer>
 					{books?.map((book) => {
-						return <>{isFetching ? <SkeletonBookCard /> : <BookCard key={book.id} book={book} onOpenDrawer={() => setIsOpen(true)} />}</>;
+						return (
+							<>
+								{isFetching ? (
+									<SkeletonBookCard />
+								) : (
+									<BookCard key={book.id} book={book} onSelectBook={() => setSelectedBook(book)} onOpenDrawer={() => setIsOpen(true)} />
+								)}
+							</>
+						);
 					})}
 				</BooksListContainer>
 			</ExploreContainer>
 
 			<Drawer open={isOpen} onClose={toggleDrawer} direction='right' size={'max-content'} lockBackgroundScroll>
-				<SidePanel />
+				{!!selectedBook && <SidePanel bookId={selectedBook.id} userSession={session.data?.user} onCloseDrawer={toggleDrawer} />}
 			</Drawer>
 		</>
 	);
@@ -134,7 +150,9 @@ Explore.getLayout = function getLayout(page: ReactElement) {
 	return <DefaultLayout>{page}</DefaultLayout>;
 };
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+	const session = await getServerSession(req, res, buildNextAuthOptions(req, res));
+
 	const categories = await prisma.category.findMany({
 		orderBy: {
 			category: 'asc',
@@ -144,7 +162,7 @@ export const getStaticProps: GetStaticProps = async () => {
 	return {
 		props: {
 			categories,
+			session,
 		},
-		revalidate: 60 * 60 * 2, // 2 hours
 	};
 };

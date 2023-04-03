@@ -1,10 +1,11 @@
-import { styled } from '@/styles';
+import { styled, keyframes, theme } from '@/styles';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 export const Container = styled('div', {
 	display: 'flex',
 	boxSizing: 'border-box',
 	flexDirection: 'column',
-	padding: '4rem 3rem',
+	padding: '1.5rem 3rem',
 
 	height: '100%',
 	maxWidth: 660,
@@ -13,6 +14,17 @@ export const Container = styled('div', {
 
 	background: '$gray800',
 	boxShadow: '-4px 0px 30px rgba(0, 0, 0, 0.8)',
+});
+
+export const HeaderContainer = styled('div', {
+	display: 'flex',
+	justifyContent: 'end',
+
+	marginBottom: '1rem',
+
+	button: {
+		color: '$gray400',
+	},
 });
 
 export const BookDetail = styled('div', {
@@ -73,7 +85,7 @@ export const BookInfos = styled('div', {
 
 export const AboutContainer = styled('div', {
 	display: 'flex',
-	justifyContent: 'space-around',
+	justifyContent: 'space-between',
 	padding: '1.5rem 4px',
 
 	svg: {
@@ -97,6 +109,11 @@ export const AboutContainer = styled('div', {
 		display: 'flex',
 		flexDirection: 'column',
 	},
+
+	ul: {
+		listStyleType: 'none',
+		display: 'flex',
+	},
 });
 
 export const TitleContainer = styled('div', {
@@ -106,6 +123,10 @@ export const TitleContainer = styled('div', {
 	width: '100%',
 
 	margin: '2.5rem 0  1rem',
+
+	small: {
+		color: '$gray400',
+	},
 });
 
 export const CommentsContainer = styled('div', {
@@ -122,6 +143,10 @@ export const CommentCard = styled('div', {
 
 	background: '$gray700',
 	borderRadius: 8,
+
+	'&[data-current-user="true"]': {
+		background: '$gray600',
+	},
 });
 
 export const HeaderComment = styled('div', {
@@ -145,26 +170,20 @@ export const HeaderComment = styled('div', {
 	},
 });
 
-export const ImageFrame = styled('div', {
-	display: 'flex',
-	justifyContent: 'center',
-	alignItems: 'center',
-
-	padding: 2,
-
-	borderRadius: '50%',
-	background: '$gradient-horizontal',
-
-	img: {
-		borderRadius: '$full',
-		width: 40,
-		height: 40,
-	},
-});
-
 export const TextComment = styled('div', {
 	p: {
 		color: '$gray300',
 		textAlign: 'justify',
+	},
+});
+
+export const EmptyCommentContainer = styled('div', {
+	display: 'flex',
+	flexDirection: 'column',
+	alignItems: 'center',
+	padding: '0 1.5rem',
+
+	span: {
+		color: '$gray400',
 	},
 });

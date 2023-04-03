@@ -1,28 +1,24 @@
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 
 import { NavLink } from './NavLink';
+import { UserAvatar } from '../UserAvatar';
+import { BookshelfIcon } from '../CustomIcons/BookshelfIcon';
 
-import { ImageFrame, LettersContainer, NavbarContainer, NavLinksContainer, UserContainer } from './styles';
+import { NavbarContainer, NavLinksContainer, UserContainer } from './styles';
 import { Binoculars, ChartLineUp, Notebook, SignOut, User } from '@phosphor-icons/react';
-
 import Logo from '../../assets/Logo.png';
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { theme } from '@/styles';
 
 export function NavBar() {
 	const session = useSession();
 
-	const [firstLetterNames, setFirstLetterNames] = useState('');
+	const [urlPath, setUrlPath] = useState('');
 
-	useEffect(() => {
-		if (session?.data?.user.name) {
-			const splitFirstAndLastName = session.data.user.name.split(' ');
-			const firtsNameLetter = splitFirstAndLastName[0]?.substring(1, 0);
-			const lastNameLetter = splitFirstAndLastName[1]?.substring(1, 0);
-
-			setFirstLetterNames(firtsNameLetter + lastNameLetter);
-		}
-	}, [session]);
+	function handleSetUrlPath() {
+		setUrlPath('');
+	}
 
 	return (
 		<NavbarContainer>
@@ -30,31 +26,38 @@ export function NavBar() {
 				<Image src={Logo} quality={100} height={32} alt='App logo' />
 
 				<NavLinksContainer>
-					<NavLink href={'/home'}>
+					<NavLink href={'/home'} getUrlPath={() => handleSetUrlPath()}>
 						<>
 							<ChartLineUp size={24} />
 							<span>Início</span>
 						</>
 					</NavLink>
 
-					<NavLink href={'/explore'}>
+					<NavLink href={'/explore'} getUrlPath={() => handleSetUrlPath()}>
 						<>
 							<Binoculars size={24} />
 							<span>Explorar</span>
 						</>
 					</NavLink>
 
-					<NavLink href={'/register'}>
+					<NavLink href={'/register'} getUrlPath={() => handleSetUrlPath()}>
 						<>
 							<Notebook size={24} />
 							<span>Cadastrar</span>
 						</>
 					</NavLink>
 
-					<NavLink href={'/perfil'}>
+					<NavLink href={'/perfil'} getUrlPath={() => handleSetUrlPath()}>
 						<>
 							<User size={24} />
 							<span>Perfil</span>
+						</>
+					</NavLink>
+
+					<NavLink href={'/bookshelf'} getUrlPath={(urlPath) => setUrlPath(urlPath)}>
+						<>
+							<BookshelfIcon size={24} color={urlPath === '/bookshelf' ? `${theme.colors.gray100}` : `${theme.colors.gray400}`} />
+							<span>Estante</span>
 						</>
 					</NavLink>
 				</NavLinksContainer>
@@ -62,15 +65,7 @@ export function NavBar() {
 
 			{session.status === 'authenticated' && (
 				<UserContainer>
-					<ImageFrame>
-						{session.data.user.avatar_url ? (
-							<Image src={session.data.user.avatar_url} alt='avatar do usuário' />
-						) : (
-							<LettersContainer>
-								<span>{firstLetterNames}</span>
-							</LettersContainer>
-						)}
-					</ImageFrame>
+					<UserAvatar userSession={session.data.user} />
 					<span>{session.data.user.username}</span>
 					<SignOut size={20} />
 				</UserContainer>

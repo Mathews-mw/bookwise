@@ -7,12 +7,6 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
 		return res.status(405).end();
 	}
 
-	const searchQuerySchema = z.object({
-		categories: z.optional(z.array(z.string())),
-	});
-
-	const { categories } = searchQuerySchema.parse(req.query);
-
 	try {
 		const categories = await prisma.category.findMany();
 

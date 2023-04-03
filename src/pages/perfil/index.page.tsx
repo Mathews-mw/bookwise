@@ -18,7 +18,7 @@ export default function Perfil() {
 		<PerfilContainer>
 			<HeaderContainer>
 				<Header>
-					<User size={22} />
+					<User size={32} />
 					<h3>Perfil</h3>
 				</Header>
 			</HeaderContainer>

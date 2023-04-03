@@ -1,15 +1,16 @@
 import { theme } from '@/styles';
 import { Star } from '@phosphor-icons/react';
-import { MouseEvent, useRef, useState } from 'react';
+import { MouseEvent, useEffect, useRef, useState } from 'react';
 
 import { Container, StarsGroup, StarFilled, StartEmpty } from './styles';
 
 interface IStarsRatingProps {
 	precision?: number;
 	totalStars?: number;
+	getRatingStars: (value: number) => void;
 }
 
-export function StarsRating({ precision = 1, totalStars = 5 }: IStarsRatingProps) {
+export function StarsRating({ precision = 1, totalStars = 5, getRatingStars }: IStarsRatingProps) {
 	const [activeStar, setActiveStar] = useState(-1);
 	const [isHovered, setIsHovered] = useState(false);
 	const [hoverActiveStar, setHoverActiveStar] = useState(-1);
@@ -27,6 +28,7 @@ export function StarsRating({ precision = 1, totalStars = 5 }: IStarsRatingProps
 
 	const handleClick = (e: MouseEvent<HTMLDivElement>) => {
 		setIsHovered(false);
+		getRatingStars(calculateRating(e));
 		setActiveStar(calculateRating(e));
 	};
 

@@ -1,48 +1,111 @@
-import dayjs from 'dayjs';
-import Image from 'next/image';
+import { z } from 'zod';
+import { User } from 'next-auth';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Container, HeaderComment, ImageFrame, TextComment } from './styles';
-import userAvatar from '../../../../assets/user2.jpg';
-import { StarsRating } from '@/components/Rating/StarsRating';
-import { TextArea } from '@/components/Form/TextArea';
-import { Button } from '@/components/Action/Button/buttons';
-import { Check, X } from '@phosphor-icons/react';
 import { theme } from '@/styles';
+import { api } from '@/lib/axios';
+import { Check, X } from '@phosphor-icons/react';
+import { UserAvatar } from '@/components/UserAvatar';
+import { TextArea } from '@/components/Form/TextArea';
+import { Spinner } from '@/components/Loaders/Spinner';
+import { ErrorMessage } from '@/components/ErrorMessage';
+import { Button } from '@/components/Action/Button/buttons';
+import { ShowErrorRequest } from '@/utils/ShowErrorRequest';
+import { StarsRating } from '@/components/Rating/StarsRating';
+import { ShowSuccessRequest } from '@/utils/ShowSuccessRequest';
 
-interface Props {
+import { Container, HeaderComment, TextComment } from './styles';
+import { queryClient } from '@/lib/react-query';
+
+interface IUserPostCommentProps {
 	closeComment: () => void;
+	userSession: User;
+	bookId: string;
 }
 
-export function UserPostComment({ closeComment }: Props) {
-	const published_date = dayjs('2023-03-21 20:15:00');
-	const publishedDateFormatted = published_date.format('DD[ de ]MMMM[ às ]HH:mm');
-	const publishedDistanceToNow = published_date.fromNow();
+const ratingFormSchema = z.object({
+	review: z.string().min(1, { message: 'Campo obrigatório' }),
+});
+
+type RatingFormData = z.infer<typeof ratingFormSchema>;
+
+export function UserPostComment({ userSession, closeComment, bookId }: IUserPostCommentProps) {
+	const {
+		handleSubmit,
+		register,
+		reset,
+		formState: { errors, isSubmitting },
+	} = useForm<RatingFormData>({
+		resolver: zodResolver(ratingFormSchema),
+	});
+
+	const [actionLoading, setActionLoading] = useState(false);
+	const [ratingValue, setRatingValue] = useState(0);
+	const [ratingError, setRatingError] = useState(false);
+
+	function handlerRatingValue(value: number) {
+		setRatingValue(value);
+		setRatingError(false);
+	}
+
+	async function handleReviewForm(data: RatingFormData) {
+		if (ratingValue <= 0) {
+			setRatingError(!ratingError);
+			return;
+		}
+
+		try {
+			setActionLoading(true);
+
+			const { data: result } = await api.post(`/books/${bookId}/review`, {
+				review: data.review,
+				rating: ratingValue,
+			});
+
+			reset();
+			setRatingValue(0);
+			closeComment();
+
+			setActionLoading(false);
+			queryClient.invalidateQueries(['book', bookId]);
+			ShowSuccessRequest(result);
+		} catch (error) {
+			setActionLoading(false);
+			ShowErrorRequest(error);
+		}
+	}
 
 	return (
 		<Container>
 			<HeaderComment>
 				<div className='profileInfos'>
-					<ImageFrame>
-						<Image src={userAvatar} alt='Profile picture' />
-					</ImageFrame>
-					<span>Cristofer Rosser</span>
+					<UserAvatar userSession={userSession} />
+					<span>{userSession.name}</span>
 				</div>
-				<StarsRating precision={1 / 2} />
+				<StarsRating precision={1 / 2} getRatingStars={(value) => handlerRatingValue(value)} />
 			</HeaderComment>
 
-			<TextComment>
-				<TextArea minHeight={164} maxCharacteres={450} placeholder='Escreva sua avaliação' />
+			<TextComment onSubmit={handleSubmit(handleReviewForm)}>
+				<TextArea minHeight={164} maxCharacteres={450} placeholder='Escreva sua avaliação' {...register('review')} />
 
-				<div className='btn-group'>
-					<Button size='sm' onClick={() => closeComment()}>
-						<X weight='bold' />
-					</Button>
+				<div className='group-elements'>
+					{actionLoading ? <Spinner /> : <div></div>}
 
-					<Button size='sm'>
-						<Check color={`${theme.colors.green100}`} weight='bold' />
-					</Button>
+					<div className='btn-group'>
+						<Button size='sm' onClick={() => closeComment()}>
+							<X weight='bold' />
+						</Button>
+
+						<Button size='sm' disabled={isSubmitting || actionLoading || ratingError}>
+							<Check color={`${theme.colors.green100}`} weight='bold' />
+						</Button>
+					</div>
 				</div>
 			</TextComment>
+			{errors.review && <ErrorMessage error={errors.review} />}
+			{ratingError && <ErrorMessage>*Você precisa selecionar algum valor de estrelas antes de enviar sua avaliação.</ErrorMessage>}
 		</Container>
 	);
 }
