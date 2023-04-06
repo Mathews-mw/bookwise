@@ -50,8 +50,8 @@ export function RegisterUserForm({ onClickEvent }: IRegisterUserFormProps) {
 
 			// const gitAcess = await signIn('github');
 
-			const gitAcess = await signIn('google');
-			const { data: result } = await api.post('/users/create', {
+			await signIn('google');
+			await api.post('/users/create', {
 				name,
 				username,
 			});

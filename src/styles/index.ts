@@ -13,6 +13,12 @@ export const { config, css, styled, globalCss, keyframes, getCssText, theme, cre
 			purple100: '#8381D9',
 			purple200: '#2A2879',
 
+			blue100: '#d0e1fd',
+			blue200: '#295bac',
+
+			yellow100: '#faedc4',
+			yellow200: '#a47d06',
+
 			gray100: '#F8F9FC',
 			gray200: '#E6E8F2',
 			gray300: '#D1D6E4',

@@ -41,10 +41,8 @@ export const BookInfos = styled('div', {
 	},
 });
 
-export const AlreadyReadContainer = styled('span', {
+export const BookStatusContainer = styled('span', {
 	position: 'absolute',
-	background: '$green300',
-	color: '$green100',
 	fontSize: 10,
 	fontWeight: 700,
 	padding: '4px 10px',

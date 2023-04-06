@@ -2,21 +2,23 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 import { ratingCalculate } from '@/utils/rating-calculate';
-import { Book, BookCategory, RatingBook } from '@prisma/client';
+import { Book, BookCategory, RatingBook, UserBook } from '@prisma/client';
 import { StarsRatingView } from '@/components/Rating/StarsRatingView';
 
-import { BookCardContainer, BookInfos, AlreadyReadContainer } from './styles';
+import { BookCardContainer, BookInfos, BookStatusContainer } from './styles';
+import { theme } from '@/styles';
 
 interface IBookCardProps {
 	book: Book & {
 		bookCategory: BookCategory[];
 		ratingBook: RatingBook[];
 	};
+	userBooks?: UserBook;
 	onOpenDrawer: () => void;
 	onSelectBook: () => void;
 }
 
-export function BookCard({ book, onOpenDrawer, onSelectBook }: IBookCardProps) {
+export function BookCard({ book, userBooks, onOpenDrawer, onSelectBook }: IBookCardProps) {
 	function handlerOpenDrawer() {
 		onOpenDrawer();
 		onSelectBook();
@@ -41,7 +43,16 @@ export function BookCard({ book, onOpenDrawer, onSelectBook }: IBookCardProps) {
 
 						{book.ratingBook.length > 0 ? <StarsRatingView rating={ratingCalculate(book.ratingBook)} /> : <StarsRatingView rating={0} />}
 					</div>
-					<AlreadyReadContainer>LIDO</AlreadyReadContainer>
+
+					{userBooks?.has_already_read ? (
+						<BookStatusContainer style={{ background: `${theme.colors.green300}`, color: `${theme.colors.green100}` }}>LIDO</BookStatusContainer>
+					) : userBooks?.is_reading ? (
+						<BookStatusContainer style={{ background: `${theme.colors.yellow200}`, color: `${theme.colors.yellow100}` }}>LENDO</BookStatusContainer>
+					) : userBooks?.wish_read ? (
+						<BookStatusContainer style={{ background: `${theme.colors.blue200}`, color: `${theme.colors.blue100}` }}>QUERO LER</BookStatusContainer>
+					) : (
+						''
+					)}
 				</BookCardContainer>
 			</motion.div>
 		</>

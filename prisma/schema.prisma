@@ -104,6 +104,7 @@ model RatingBook {
   book Book @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
   user User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
+  @@unique([book_id, user_id])
   @@index([book_id, user_id])
   @@map("rating_books")
 }
@@ -119,6 +120,7 @@ model BookReview {
   book Book @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
   user User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
+  @@unique([user_id, book_id])
   @@map("books_reviews")
 }
 
@@ -133,6 +135,7 @@ model UserBook {
   book Book @relation(fields: [book_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
   user User @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
+  @@unique([user_id, book_id])
   @@index([user_id, book_id])
   @@map("users_books")
 }

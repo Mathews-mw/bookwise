@@ -24,6 +24,17 @@ export const HeaderContainer = styled('header', {
 	margin: '0 auto',
 });
 
+export const GroupingBooksContainer = styled('div', {
+	gridArea: 'main',
+
+	display: 'flex',
+	flexDirection: 'column',
+	gap: '2rem',
+	maxWidth: 996,
+	width: '100%',
+	margin: '0 auto 1rem auto',
+});
+
 export const BreadcrumbTitleContainer = styled('div', {
 	display: 'flex',
 	justifyContent: 'space-between',
@@ -31,15 +42,11 @@ export const BreadcrumbTitleContainer = styled('div', {
 	marginBottom: '1rem',
 });
 
-export const ReadBooksContainer = styled('div', {
-	gridArea: 'main',
+export const ReadedBooksContainer = styled('div', {});
 
-	display: 'flex',
-	flexDirection: 'column',
-	maxWidth: 996,
-	width: '100%',
-	margin: '0 auto 1rem auto',
-});
+export const WishReadBookContainer = styled('div', {});
+
+export const CurrentlyReadingContainer = styled('div', {});
 
 export const BooksListContainer = styled('div', {
 	display: 'grid',

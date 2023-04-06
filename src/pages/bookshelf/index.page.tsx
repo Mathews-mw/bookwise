@@ -2,15 +2,19 @@ import { ReactElement } from 'react';
 
 import { Header } from '@/components/Header';
 import DefaultLayout from '@/layouts/Default';
-import { TextInput } from '@/components/Form/TextInput';
 
-import { MagnifyingGlass, User } from '@phosphor-icons/react';
-import { BookShelfContainer, HeaderContainer, BreadcrumbTitleContainer, ReadBooksContainer, BooksListContainer, AnalyticsSidebarContainer } from './styles';
+import {
+	BookShelfContainer,
+	HeaderContainer,
+	GroupingBooksContainer,
+	BreadcrumbTitleContainer,
+	BooksListContainer,
+	CurrentlyReadingContainer,
+	ReadedBooksContainer,
+	WishReadBookContainer,
+	AnalyticsSidebarContainer,
+} from './styles';
 
-import OHobbit from '../../assets/o-hobbit.png';
-import Algoritmos from '../../assets/entendendo-algoritmos.png';
-import MochileirosGalaxias from '../../assets/o-guia-do-mochileiro-das-galaxias.png';
-import { MyBookReviewCard } from '../perfil/MyBookReviewCard';
 import { UserAnalytics } from '../perfil/UserAnalytics';
 import { BookshelfIcon } from '@/components/CustomIcons/BookshelfIcon';
 import { theme } from '@/styles';
@@ -20,13 +24,19 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { BookCard } from './BookCard';
-import { api } from '@/lib/axios';
+import { Book, BookCategory, UserBook } from '@prisma/client';
 
-export default function Bookshelf({ books }) {
-	const session = useSession();
+interface IBooks extends Book {
+	bookCategory: BookCategory[];
+}
 
-	console.log('books:', books);
+interface IBookshelf {
+	booksCurrentlyReading: IBooks[];
+	alreadyReadBooks: IBooks[];
+	wishReadBooks: IBooks[];
+}
 
+export default function Bookshelf({ booksCurrentlyReading, alreadyReadBooks, wishReadBooks }: IBookshelf) {
 	return (
 		<BookShelfContainer>
 			<HeaderContainer>
@@ -36,20 +46,49 @@ export default function Bookshelf({ books }) {
 				</Header>
 			</HeaderContainer>
 
-			<ReadBooksContainer>
-				<BreadcrumbTitleContainer>
-					<span>Livros que você já leu</span>
-				</BreadcrumbTitleContainer>
+			<GroupingBooksContainer>
+				<CurrentlyReadingContainer>
+					<BreadcrumbTitleContainer>
+						<span>
+							Livros que você <strong style={{ color: `${theme.colors.yellow200}` }}> está lendo </strong>
+						</span>
+					</BreadcrumbTitleContainer>
 
-				<BooksListContainer>
-					<BookCard book={books[0]} onSelectBook={() => console.log('')} />
-					<BookCard book={books[1]} onSelectBook={() => console.log('')} />
-					<BookCard book={books[2]} onSelectBook={() => console.log('')} />
-					<BookCard book={books[3]} onSelectBook={() => console.log('')} />
-					<BookCard book={books[4]} onSelectBook={() => console.log('')} />
-					<BookCard book={books[5]} onSelectBook={() => console.log('')} />
-				</BooksListContainer>
-			</ReadBooksContainer>
+					<BooksListContainer>
+						{booksCurrentlyReading.map((book) => {
+							return <BookCard key={book.id} book={book} onSelectBook={() => console.log('')} />;
+						})}
+					</BooksListContainer>
+				</CurrentlyReadingContainer>
+
+				<WishReadBookContainer>
+					<BreadcrumbTitleContainer>
+						<span>
+							Livros que você <strong style={{ color: `${theme.colors.blue200}` }}> gostaria de ler </strong>
+						</span>
+					</BreadcrumbTitleContainer>
+
+					<BooksListContainer>
+						{wishReadBooks.map((book) => {
+							return <BookCard key={book.id} book={book} onSelectBook={() => console.log('')} />;
+						})}
+					</BooksListContainer>
+				</WishReadBookContainer>
+
+				<ReadedBooksContainer>
+					<BreadcrumbTitleContainer>
+						<span>
+							Livros que você <strong style={{ color: `${theme.colors.green200}` }}> já leu </strong>
+						</span>
+					</BreadcrumbTitleContainer>
+
+					<BooksListContainer>
+						{alreadyReadBooks.map((book) => {
+							return <BookCard key={book.id} book={book} onSelectBook={() => console.log('')} />;
+						})}
+					</BooksListContainer>
+				</ReadedBooksContainer>
+			</GroupingBooksContainer>
 
 			<AnalyticsSidebarContainer>
 				<UserAnalytics />
@@ -65,16 +104,56 @@ Bookshelf.getLayout = function getLayout(page: ReactElement) {
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 	const session = await getServerSession(req, res, buildNextAuthOptions(req, res));
 
-	const books = await prisma.book.findMany({
+	const booksCurrentlyReading = await prisma.book.findMany({
 		include: {
 			bookCategory: true,
+			userBook: true,
+		},
+		where: {
+			userBook: {
+				some: {
+					is_reading: true,
+				},
+			},
 		},
 	});
+
+	const wishReadBooks = await prisma.book.findMany({
+		include: {
+			bookCategory: true,
+			userBook: true,
+		},
+		where: {
+			userBook: {
+				some: {
+					wish_read: true,
+				},
+			},
+		},
+	});
+
+	const alreadyReadBooks = await prisma.book.findMany({
+		include: {
+			bookCategory: true,
+			userBook: true,
+		},
+		where: {
+			userBook: {
+				some: {
+					has_already_read: true,
+				},
+			},
+		},
+	});
+
+	console.log('alreadyReadBooks: ', alreadyReadBooks);
 
 	return {
 		props: {
 			session,
-			books,
+			booksCurrentlyReading,
+			wishReadBooks,
+			alreadyReadBooks,
 		},
 	};
 };

@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '@/lib/prisma';
-import { getServerSession, unstable_getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { buildNextAuthOptions } from '../../auth/[...nextauth].api';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	try {
 		const { review, rating } = parseResult.data;
 
-		const bookReview = await prisma.bookReview.create({
+		await prisma.bookReview.create({
 			data: {
 				review,
 				book_id: bookId,
@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			},
 		});
 
-		const bookRating = await prisma.ratingBook.create({
+		await prisma.ratingBook.create({
 			data: {
 				rating,
 				book_id: bookId,

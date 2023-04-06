@@ -1,7 +1,7 @@
-import { prisma } from '@/lib/prisma';
-import { NextApiRequest, NextApiResponse } from 'next';
 import { z } from 'zod';
 import { setCookie } from 'nookies';
+import { prisma } from '@/lib/prisma';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method !== 'POST') {

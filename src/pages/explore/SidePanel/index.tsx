@@ -1,16 +1,22 @@
 import dayjs from 'dayjs';
-
 import Image from 'next/image';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User } from 'next-auth/core/types';
 import { useQuery } from '@tanstack/react-query';
 
+import { theme } from '@/styles';
 import { api } from '@/lib/axios';
 import { UserPostComment } from './UserPostComment';
+import { UserAvatar } from '@/components/UserAvatar';
+import { ContextMenu } from '@/components/ContextMenu';
+import { ratingCalculate } from '@/utils/rating-calculate';
 import { Button } from '@/components/Action/Button/buttons';
 import { StarsRatingView } from '@/components/Rating/StarsRatingView';
-import { Book, BookCategory, Category, RatingBook, BookReview } from '@prisma/client';
+import { BookDetailSkeleton } from './SkeletonsSidePanel/BookDetailSkeleton';
+import { PostCommentSkeleton } from './SkeletonsSidePanel/PostCommentSkeleton';
+import { TitleContainerSkeleton } from './SkeletonsSidePanel/TitleContainerSkeleton';
+import { Book, BookCategory, Category, RatingBook, BookReview, UserBook } from '@prisma/client';
 
 import { BookmarkSimple, BookOpen, X } from '@phosphor-icons/react';
 import {
@@ -26,15 +32,11 @@ import {
 	TextComment,
 	TitleContainer,
 	EmptyCommentContainer,
+	BookStatusContainer,
 } from './styles';
 
 import emptyImg from '../../../assets/free-time.png';
-import { UserAvatar } from '@/components/UserAvatar';
-import { ratingCalculate } from '@/utils/rating-calculate';
-import { BookDetailSkeleton } from './SkeletonsSidePanel/BookDetailSkeleton';
-import { TitleContainerSkeleton } from './SkeletonsSidePanel/TitleContainerSkeleton';
-import { PostCommentSkeleton } from './SkeletonsSidePanel/PostCommentSkeleton';
-import { ContextMenu } from '@/components/ContextMenu';
+import { UserEditPostComment } from './UserEditPostComment';
 
 interface IBookCategory extends BookCategory {
 	category: Category;
@@ -53,11 +55,13 @@ interface IBook extends Book {
 interface ISidePanelProps {
 	bookId: string;
 	userSession?: User;
+	userBooks?: UserBook;
 	onCloseDrawer: () => void;
 }
 
-export function SidePanel({ bookId, userSession, onCloseDrawer }: ISidePanelProps) {
+export function SidePanel({ bookId, userSession, userBooks, onCloseDrawer }: ISidePanelProps) {
 	const [showUserCommentCard, setShowUserCommentCard] = useState(false);
+	const [showUserEditCommentCard, setShowUserEditCommentCard] = useState(false);
 
 	function handlerOpenReviewComment() {
 		if (userSession) {
@@ -80,7 +84,7 @@ export function SidePanel({ bookId, userSession, onCloseDrawer }: ISidePanelProp
 	return (
 		<Container>
 			<HeaderContainer>
-				{book && <ContextMenu bookId={book.id} />}
+				{book && <ContextMenu bookId={book.id} userId={userSession?.id} userBook={userBooks} />}
 				<Button size='sm' variant='ghost' onClick={() => onCloseDrawer()}>
 					<X weight='bold' />
 				</Button>
@@ -88,6 +92,16 @@ export function SidePanel({ bookId, userSession, onCloseDrawer }: ISidePanelProp
 
 			{!isFetching ? (
 				<BookDetail>
+					{userBooks?.has_already_read ? (
+						<BookStatusContainer style={{ background: `${theme.colors.green300}`, color: `${theme.colors.green100}` }}>LIDO</BookStatusContainer>
+					) : userBooks?.is_reading ? (
+						<BookStatusContainer style={{ background: `${theme.colors.yellow200}`, color: `${theme.colors.yellow100}` }}>LENDO</BookStatusContainer>
+					) : userBooks?.wish_read ? (
+						<BookStatusContainer style={{ background: `${theme.colors.blue200}`, color: `${theme.colors.blue100}` }}>QUERO LER</BookStatusContainer>
+					) : (
+						''
+					)}
+
 					<BookCardContainer>
 						<Image src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${book?.cover_image}`} width={172} height={242} alt='book cover' />
 
@@ -140,9 +154,14 @@ export function SidePanel({ bookId, userSession, onCloseDrawer }: ISidePanelProp
 
 			{!isFetching ? (
 				<TitleContainer>
-					<span>Avaliações</span>
+					<div className='group-title'>
+						<span>Avaliações</span>
+						{UserAlreadyRatedBook && <small>Você já avaliou esse livro 😀</small>}
+					</div>
 					{UserAlreadyRatedBook ? (
-						<small>Você já avaliou esse livro 😀</small>
+						<Button variant='ghost' colorScheme='white' size='sm' onClick={() => setShowUserEditCommentCard(!showUserEditCommentCard)}>
+							Editar comentário
+						</Button>
 					) : (
 						<Button variant='ghost' colorScheme='purple' size='sm' onClick={() => handlerOpenReviewComment()}>
 							Avaliar
@@ -166,9 +185,25 @@ export function SidePanel({ bookId, userSession, onCloseDrawer }: ISidePanelProp
 						</motion.div>
 					)}
 
+					{showUserEditCommentCard && userSession && book && (
+						<motion.div
+							initial={{ y: -10, opacity: 0 }}
+							animate={{ y: 0, opacity: 1 }}
+							exit={{ y: -10, opacity: 0 }}
+							transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
+						>
+							<UserEditPostComment userSession={userSession} bookId={book.id} closeComment={() => setShowUserEditCommentCard(!showUserEditCommentCard)} />
+						</motion.div>
+					)}
+
 					{book?.bookReview && book?.bookReview.length > 0 ? (
 						book.bookReview.map((review) => {
-							const published_date = dayjs(review.created_at);
+							let published_date = dayjs(review.created_at);
+
+							if (review.updated_at) {
+								published_date = dayjs(review.updated_at);
+							}
+
 							const publishedDateFormatted = published_date.format('DD[ de ]MMMM[ às ]HH:mm');
 							const publishedDistanceToNow = published_date.fromNow();
 
@@ -187,8 +222,9 @@ export function SidePanel({ bookId, userSession, onCloseDrawer }: ISidePanelProp
 											<div className='group'>
 												<span>{review.user.name}</span>
 												<time title={publishedDateFormatted} dateTime={published_date.toISOString()}>
-													{publishedDistanceToNow}
+													{review.updated_at && 'modificado'} {publishedDistanceToNow}
 												</time>
+												{}
 											</div>
 										</div>
 										<StarsRatingView rating={ratingFormatted} />

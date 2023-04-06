@@ -82,6 +82,7 @@ export const IconButton = styled('button', {
 	display: 'inline-flex',
 	alignItems: 'center',
 	justifyContent: 'center',
+	cursor: 'pointer',
 
 	color: `${theme.colors.green100} !import`,
 	'&:hover': { color: theme.colors.purple100 },

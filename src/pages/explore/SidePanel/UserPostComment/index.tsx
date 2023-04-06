@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { User } from 'next-auth';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { queryClient } from '@/lib/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { theme } from '@/styles';
@@ -17,7 +18,6 @@ import { StarsRating } from '@/components/Rating/StarsRating';
 import { ShowSuccessRequest } from '@/utils/ShowSuccessRequest';
 
 import { Container, HeaderComment, TextComment } from './styles';
-import { queryClient } from '@/lib/react-query';
 
 interface IUserPostCommentProps {
 	closeComment: () => void;

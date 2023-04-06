@@ -1,4 +1,4 @@
-import { styled, theme } from '@/styles';
+import { styled } from '@/styles';
 
 export const InputTextContainer = styled('div', {});
 

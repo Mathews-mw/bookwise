@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { NextApiRequest, NextApiResponse } from 'next';
+
+import { prisma } from '@/lib/prisma';
 import { buildNextAuthOptions } from '../../auth/[...nextauth].api';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -22,9 +23,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	}
 
 	const reviewBodySchema = z.object({
-		has_already_read: z.optional(z.boolean()),
-		is_reading: z.optional(z.boolean()),
 		wish_read: z.optional(z.boolean()),
+		is_reading: z.optional(z.boolean()),
+		has_already_read: z.optional(z.boolean()),
 	});
 
 	const parseResult = reviewBodySchema.safeParse(req.body);
@@ -36,10 +37,37 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 	try {
 		const { has_already_read, is_reading, wish_read } = parseResult.data;
 
-		const bookReview = await prisma.userBook.create({
+		const userBook = await prisma.userBook.findUnique({
+			where: {
+				user_id_book_id: {
+					book_id: bookId,
+					user_id: session.user.id,
+				},
+			},
+		});
+
+		if (!userBook) {
+			await prisma.userBook.create({
+				data: {
+					book_id: bookId,
+					user_id: session.user.id,
+					has_already_read,
+					is_reading,
+					wish_read,
+				},
+			});
+
+			return res.status(201).json({ type: 'success', statusCode: 201, message: 'Status do livro atualizado' });
+		}
+
+		await prisma.userBook.update({
+			where: {
+				user_id_book_id: {
+					book_id: bookId,
+					user_id: session.user.id,
+				},
+			},
 			data: {
-				book_id: bookId,
-				user_id: session.user.id,
 				has_already_read,
 				is_reading,
 				wish_read,

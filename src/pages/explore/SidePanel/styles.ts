@@ -1,5 +1,4 @@
-import { styled, keyframes, theme } from '@/styles';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { styled } from '@/styles';
 
 export const Container = styled('div', {
 	display: 'flex',
@@ -31,6 +30,7 @@ export const BookDetail = styled('div', {
 	display: 'flex',
 	flexDirection: 'column',
 	padding: '1.5rem 2rem 1rem',
+	position: 'relative',
 
 	background: '$gray700',
 	borderRadius: 10,
@@ -41,6 +41,16 @@ export const BookDetail = styled('div', {
 
 		borderBottom: 'solid 1px $gray600',
 	},
+});
+
+export const BookStatusContainer = styled('span', {
+	position: 'absolute',
+	fontSize: 10,
+	fontWeight: 700,
+	padding: '4px 10px',
+	borderRadius: '0 $md 0 0',
+	top: 0,
+	right: 0,
 });
 
 export const BookCardContainer = styled('div', {
@@ -126,6 +136,11 @@ export const TitleContainer = styled('div', {
 
 	small: {
 		color: '$gray400',
+	},
+
+	'.group-title': {
+		display: 'flex',
+		flexDirection: 'column',
 	},
 });
 

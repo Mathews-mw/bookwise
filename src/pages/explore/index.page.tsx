@@ -1,5 +1,5 @@
 import qs from 'qs';
-import { GetServerSideProps, GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import debounce from 'lodash/debounce';
 import Drawer from 'react-modern-drawer';
 import { useQuery } from '@tanstack/react-query';
@@ -14,13 +14,12 @@ import { Header } from '@/components/Header';
 import DefaultLayout from '@/layouts/Default';
 import { SkeletonBookCard } from './SkeletonBookCard';
 import { TextInput } from '@/components/Form/TextInput';
-import { Book, BookCategory, Category, RatingBook } from '@prisma/client';
+import { Book, BookCategory, Category, RatingBook, UserBook } from '@prisma/client';
 
 import { Binoculars, MagnifyingGlass, MinusCircle, PlusCircle } from '@phosphor-icons/react';
 import { ExploreContainer, HeaderContainer, CategoriesContainer, CategoryTag, BooksListContainer, ShowAllButton } from './styles';
-import { getServerSession, unstable_getServerSession } from 'next-auth';
+import { getServerSession } from 'next-auth';
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
-import { Session } from 'next-auth/core/types';
 
 interface IExploreProps {
 	categories: Category[];
@@ -61,6 +60,16 @@ export default function Explore({ categories }: IExploreProps) {
 			setSelectCategories((prevState) => [category, ...prevState]);
 		}
 	}
+
+	const { data: userBooks, isFetching: isUserBooksFetching } = useQuery<UserBook[]>(
+		['users_books', session?.data?.user.id, selectedBook?.id],
+		async () => {
+			const { data } = await api.get('/user-book');
+
+			return data;
+		},
+		{ enabled: !!session.data?.user }
+	);
 
 	const { data: books, isFetching } = useQuery<IBook[]>(['searchBook', delayQuerySearch, selectCategories], async () => {
 		const { data } = await api.get('/books', {
@@ -131,7 +140,13 @@ export default function Explore({ categories }: IExploreProps) {
 								{isFetching ? (
 									<SkeletonBookCard />
 								) : (
-									<BookCard key={book.id} book={book} onSelectBook={() => setSelectedBook(book)} onOpenDrawer={() => setIsOpen(true)} />
+									<BookCard
+										key={book.id}
+										book={book}
+										userBooks={userBooks?.find((item) => item.book_id === book.id)}
+										onSelectBook={() => setSelectedBook(book)}
+										onOpenDrawer={() => setIsOpen(true)}
+									/>
 								)}
 							</>
 						);
@@ -140,7 +155,14 @@ export default function Explore({ categories }: IExploreProps) {
 			</ExploreContainer>
 
 			<Drawer open={isOpen} onClose={toggleDrawer} direction='right' size={'max-content'} lockBackgroundScroll>
-				{!!selectedBook && <SidePanel bookId={selectedBook.id} userSession={session.data?.user} onCloseDrawer={toggleDrawer} />}
+				{!!selectedBook && (
+					<SidePanel
+						bookId={selectedBook.id}
+						userSession={session.data?.user}
+						userBooks={userBooks?.find((item) => item.book_id === selectedBook.id)}
+						onCloseDrawer={toggleDrawer}
+					/>
+				)}
 			</Drawer>
 		</>
 	);

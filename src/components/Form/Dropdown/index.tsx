@@ -1,14 +1,13 @@
 import { theme } from '@/styles';
-import { ComponentProps, forwardRef, ForwardRefRenderFunction } from 'react';
 import Select, { Props } from 'react-select';
 import makeAnimated from 'react-select/animated';
+import { forwardRef, ForwardRefRenderFunction } from 'react';
 
 interface IDropdownProps extends Props {
-	label?: string;
 	isMulti?: boolean;
 }
 
-const DropdownBase: ForwardRefRenderFunction<HTMLSelectElement, IDropdownProps> = ({ label, isMulti = false, ...props }, ref) => {
+const DropdownBase: ForwardRefRenderFunction<HTMLSelectElement, IDropdownProps> = ({ isMulti = false, ...props }) => {
 	const animatedComponents = makeAnimated();
 
 	return (
@@ -48,7 +47,6 @@ const DropdownBase: ForwardRefRenderFunction<HTMLSelectElement, IDropdownProps> 
 					opacity: `${state.isDisabled ? 0.5 : 1}`,
 				}),
 			}}
-			// ref={ref}
 			{...props}
 		/>
 	);

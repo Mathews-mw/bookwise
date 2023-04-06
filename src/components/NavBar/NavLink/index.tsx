@@ -6,12 +6,11 @@ import { LinkContainer } from './styles';
 
 interface INavLinkProps extends LinkProps {
 	children: ReactElement;
-	shouldMatchExactHref?: boolean;
 	href: string;
 	getUrlPath?: (urlPath: string) => void;
 }
 
-export function NavLink({ children, getUrlPath, shouldMatchExactHref, href, ...rest }: INavLinkProps) {
+export function NavLink({ children, getUrlPath, href, ...rest }: INavLinkProps) {
 	const { asPath } = useRouter();
 
 	let isActive = false;

@@ -35,6 +35,8 @@ export function BookReviewCard({ userName, publishedDate, userAvatar, bookTitle,
 	const publishedDateFormatted = published_date.format('DD[ de ]MMMM[ às ]HH:mm');
 	const publishedDistanceToNow = published_date.fromNow();
 
+	const precision = 1 / 2;
+
 	const CollapsibleRoot = styled(Collapsible.Root, {
 		width: 300,
 	});
@@ -53,7 +55,7 @@ export function BookReviewCard({ userName, publishedDate, userAvatar, bookTitle,
 						</time>
 					</div>
 				</div>
-				<StarsRating precision={1 / 2} />
+				<StarsRating precision={precision} />
 			</HeaderReview>
 
 			<ReviewContainer>

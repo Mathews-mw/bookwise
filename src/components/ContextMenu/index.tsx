@@ -1,37 +1,47 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
-import { Check, List } from '@phosphor-icons/react';
-import { DropdownMenuContent, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuArrow, DropdownMenuItemIndicator, IconButton } from './styles';
 import { api } from '@/lib/axios';
-import { ShowSuccessRequest } from '@/utils/ShowSuccessRequest';
+
 import { ShowErrorRequest } from '@/utils/ShowErrorRequest';
-import { useQuery } from '@tanstack/react-query';
+import { ShowSuccessRequest } from '@/utils/ShowSuccessRequest';
+
+import { Check, List } from '@phosphor-icons/react';
+import { DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuArrow, DropdownMenuItemIndicator, IconButton } from './styles';
+import { queryClient } from '@/lib/react-query';
+import { UserBook } from '@prisma/client';
 
 interface IContextMenuProps {
 	bookId: string;
+	userId?: string;
+	userBook?: UserBook;
 }
 
-export function ContextMenu({ bookId }: IContextMenuProps) {
+export function ContextMenu({ bookId, userId, userBook }: IContextMenuProps) {
 	const [actionLoading, setActionLoading] = useState(false);
 
 	const [wishRead, setWishRead] = useState(false);
 	const [isReading, setIsReading] = useState(false);
 	const [alreadyReaded, setAlreadyReaded] = useState(false);
 
-	const { data } = useQuery(['user-book'], async () => {});
-
 	async function handlerUpdateAlreadyReaded(checked: boolean) {
 		try {
 			setActionLoading(true);
 
-			const { data } = await api.post(`books/${bookId}/user-book`, {
+			const { data } = await api.post(`user-book/${bookId}/status-book`, {
 				has_already_read: checked,
+				wish_read: false,
+				is_reading: false,
 			});
 
 			setAlreadyReaded(checked);
+			setIsReading(false);
+			setWishRead(false);
+
 			setActionLoading(false);
 
+			queryClient.invalidateQueries(['searchBook', bookId]);
+			queryClient.invalidateQueries(['users_books', userId]);
 			ShowSuccessRequest(data);
 		} catch (error) {
 			setActionLoading(false);
@@ -43,13 +53,20 @@ export function ContextMenu({ bookId }: IContextMenuProps) {
 		try {
 			setActionLoading(true);
 
-			const { data } = await api.post(`books/${bookId}/user-book`, {
+			const { data } = await api.post(`user-book/${bookId}/status-book`, {
 				wish_read: checked,
+				is_reading: false,
+				has_already_read: false,
 			});
 
 			setWishRead(checked);
+			setIsReading(false);
+			setAlreadyReaded(false);
+
 			setActionLoading(false);
 
+			queryClient.invalidateQueries(['searchBook', bookId]);
+			queryClient.invalidateQueries(['users_books', userId]);
 			ShowSuccessRequest(data);
 		} catch (error) {
 			setActionLoading(false);
@@ -61,13 +78,20 @@ export function ContextMenu({ bookId }: IContextMenuProps) {
 		try {
 			setActionLoading(true);
 
-			const { data } = await api.post(`books/${bookId}/user-book`, {
+			const { data } = await api.post(`user-book/${bookId}/status-book`, {
 				is_reading: checked,
+				has_already_read: false,
+				wish_read: false,
 			});
 
 			setIsReading(checked);
+			setAlreadyReaded(false);
+			setWishRead(false);
+
 			setActionLoading(false);
 
+			queryClient.invalidateQueries(['searchBook', bookId]);
+			queryClient.invalidateQueries(['users_books', userId]);
 			ShowSuccessRequest(data);
 		} catch (error) {
 			setActionLoading(false);
@@ -85,21 +109,33 @@ export function ContextMenu({ bookId }: IContextMenuProps) {
 
 			<DropdownMenu.Portal>
 				<DropdownMenuContent sideOffset={5}>
-					<DropdownMenuCheckboxItem disabled={actionLoading} checked={alreadyReaded} onCheckedChange={(checked) => handlerUpdateAlreadyReaded(checked)}>
+					<DropdownMenuCheckboxItem
+						disabled={actionLoading}
+						checked={userBook && userBook.has_already_read ? true : alreadyReaded}
+						onCheckedChange={(checked) => handlerUpdateAlreadyReaded(checked)}
+					>
 						<DropdownMenuItemIndicator>
 							<Check />
 						</DropdownMenuItemIndicator>
 						Marcar como lido
 					</DropdownMenuCheckboxItem>
 
-					<DropdownMenuCheckboxItem disabled={actionLoading} checked={wishRead} onCheckedChange={(checked) => handlerUpdateWishRead(checked)}>
+					<DropdownMenuCheckboxItem
+						disabled={actionLoading}
+						checked={userBook && userBook.wish_read ? true : wishRead}
+						onCheckedChange={(checked) => handlerUpdateWishRead(checked)}
+					>
 						<DropdownMenuItemIndicator>
 							<Check />
 						</DropdownMenuItemIndicator>
 						Quero ler
 					</DropdownMenuCheckboxItem>
 
-					<DropdownMenuCheckboxItem disabled={actionLoading} checked={isReading} onCheckedChange={(checked) => handlerUpdateIsReading(checked)}>
+					<DropdownMenuCheckboxItem
+						disabled={actionLoading}
+						checked={userBook && userBook.is_reading ? true : isReading}
+						onCheckedChange={(checked) => handlerUpdateIsReading(checked)}
+					>
 						<DropdownMenuItemIndicator>
 							<Check />
 						</DropdownMenuItemIndicator>

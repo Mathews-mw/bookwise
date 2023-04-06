@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import * as RadixProgress from '@radix-ui/react-progress';
 
 import { ProgressIndicator, ProgressRoot } from './styles';
 
