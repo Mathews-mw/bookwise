@@ -22,9 +22,8 @@ import { GetServerSideProps } from 'next';
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
-import { useSession } from 'next-auth/react';
 import { BookCard } from './BookCard';
-import { Book, BookCategory, UserBook } from '@prisma/client';
+import { Book, BookCategory } from '@prisma/client';
 
 interface IBooks extends Book {
 	bookCategory: BookCategory[];
@@ -145,8 +144,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 			},
 		},
 	});
-
-	console.log('alreadyReadBooks: ', alreadyReadBooks);
 
 	return {
 		props: {

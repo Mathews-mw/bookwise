@@ -12,8 +12,32 @@ import { PerfilContainer, HeaderContainer, MyBookReviewsContainer, AnalyticsSide
 import OHobbit from '../../assets/o-hobbit.png';
 import Algoritmos from '../../assets/entendendo-algoritmos.png';
 import MochileirosGalaxias from '../../assets/o-guia-do-mochileiro-das-galaxias.png';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
+import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
+import { prisma } from '@/lib/prisma';
+import { Book, BookCategory, Category, RatingBook, UserBook, User as UserPrisma } from '@prisma/client';
+import { useSession } from 'next-auth/react';
+import lodash from 'lodash';
 
-export default function Perfil() {
+interface IBook extends Book {
+	bookCategory: Array<BookCategory & { category: Category }>;
+}
+
+interface IUserBooks extends UserBook {
+	book: IBook;
+}
+
+interface IPerfilProps {
+	user: UserPrisma;
+	userBooks: IUserBooks[];
+	ratingBooks: RatingBook[];
+	MostReadUniqueCategories: string[];
+}
+
+export default function Perfil({ user, userBooks, ratingBooks, MostReadUniqueCategories }: IPerfilProps) {
+	const session = useSession();
+
 	return (
 		<PerfilContainer>
 			<HeaderContainer>
@@ -56,7 +80,15 @@ export default function Perfil() {
 			</MyBookReviewsContainer>
 
 			<AnalyticsSidebarContainer>
-				<UserAnalytics />
+				{session.status === 'authenticated' && (
+					<UserAnalytics
+						user={user}
+						userSession={session.data.user}
+						userBooks={userBooks}
+						ratingBooks={ratingBooks}
+						mostReadCategories={MostReadUniqueCategories}
+					/>
+				)}
 			</AnalyticsSidebarContainer>
 		</PerfilContainer>
 	);
@@ -64,4 +96,110 @@ export default function Perfil() {
 
 Perfil.getLayout = function getLayout(page: ReactElement) {
 	return <DefaultLayout>{page}</DefaultLayout>;
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+	const session = await getServerSession(req, res, buildNextAuthOptions(req, res));
+
+	const user = await prisma.user.findUnique({
+		where: {
+			id: session?.user.id,
+		},
+	});
+
+	const userBooks = await prisma.userBook.findMany({
+		where: {
+			user_id: session?.user.id,
+		},
+		include: {
+			book: {
+				include: {
+					bookCategory: {
+						include: {
+							category: true,
+						},
+					},
+				},
+			},
+		},
+	});
+
+	const ratingBooks = await prisma.ratingBook.findMany({
+		where: {
+			user_id: session?.user.id,
+		},
+	});
+
+	const getCategoriesOfReadBooks = await prisma.book.findMany({
+		where: {
+			userBook: {
+				some: {
+					user_id: session?.user.id,
+					has_already_read: true,
+				},
+			},
+		},
+		select: {
+			bookCategory: {
+				select: {
+					category: {
+						select: {
+							category: true,
+						},
+					},
+				},
+				orderBy: {
+					category: {
+						category: 'asc',
+					},
+				},
+			},
+		},
+	});
+
+	// Essa função vai retornar as categorias distintas mais lidas
+	function getMostReadCategories() {
+		const getCategoriesOnly = getCategoriesOfReadBooks.map((bookCategory) => {
+			return bookCategory.bookCategory.map((categoryName) => {
+				return categoryName.category.category;
+			});
+		});
+
+		let arrayWithOnlyCategoriesName: string[] = [];
+		for (let i = 0; i < getCategoriesOnly.length; i++) {
+			arrayWithOnlyCategoriesName.push(...getCategoriesOnly[i]);
+		}
+
+		let selectMostReadCategories = [];
+		for (let index = 0; index < arrayWithOnlyCategoriesName.length; index++) {
+			const currentCategoryCounting = lodash.countBy(arrayWithOnlyCategoriesName)[arrayWithOnlyCategoriesName[index]];
+
+			selectMostReadCategories.push({ category: arrayWithOnlyCategoriesName[index], amount: currentCategoryCounting });
+		}
+
+		const maxAmountCategoryNumber = Math.max.apply(
+			null,
+			selectMostReadCategories.map((item) => item.amount)
+		);
+
+		const getOnlyMostReadCategories = selectMostReadCategories.filter((item) => {
+			return item.amount === maxAmountCategoryNumber;
+		});
+
+		const MostReadUniqueCategories = [...new Set(getOnlyMostReadCategories.map((item) => item.category))];
+
+		return MostReadUniqueCategories;
+	}
+
+	const MostReadUniqueCategories = getMostReadCategories();
+
+	return {
+		props: {
+			session,
+			user: JSON.parse(JSON.stringify(user)),
+			userBooks,
+			ratingBooks: JSON.parse(JSON.stringify(ratingBooks)),
+			MostReadUniqueCategories,
+		},
+	};
 };

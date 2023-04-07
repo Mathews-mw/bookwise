@@ -70,8 +70,13 @@ export const ItemContainer = styled('div', {
 		flexDirection: 'column',
 	},
 
+	'span:first-child': {
+		fontWeight: 'bold',
+		color: '$gray100',
+	},
+
 	'span:last-child': {
-		color: '$gray300',
+		color: '$gray400',
 		fontSize: 14,
 	},
 });

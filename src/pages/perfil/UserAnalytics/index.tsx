@@ -1,22 +1,52 @@
+import dayjs from 'dayjs';
 import Image from 'next/image';
+import { User } from 'next-auth';
+
+import { UserAvatar } from '@/components/UserAvatar';
+import { Book, BookCategory, Category, UserBook, User as UserPrisma, RatingBook } from '@prisma/client';
 
 import { Books, BookmarksSimple, BookOpenText } from '@phosphor-icons/react';
 import { AvatarFrame, UserAnalyticsContainer, UserInfosContainer, Rectangle, UserStatisticsContainer, ItemContainer } from './styles';
 
-import user1 from '../../../assets/user1.jpg';
 import BookStar from '../../../assets/book-star.svg';
 
-export function UserAnalytics() {
+interface IBook extends Book {
+	bookCategory: Array<BookCategory & { category: Category }>;
+}
+
+interface IUserBooks extends UserBook {
+	book: IBook;
+}
+
+interface IUserAnalytics {
+	user: UserPrisma;
+	userSession: User;
+	userBooks: IUserBooks[];
+	ratingBooks: RatingBook[];
+	mostReadCategories: string[];
+}
+
+export function UserAnalytics({ user, userSession, userBooks, ratingBooks, mostReadCategories }: IUserAnalytics) {
+	const memberSince = dayjs(user?.created_at).format('[membro desde ]YYYY');
+
+	const amountReadBooks = userBooks.filter((book) => book.has_already_read === true).length;
+	const amountRatingBooks = ratingBooks.length;
+
+	const Pagesbooks = userBooks.map((userBook) => userBook.book.total_pages!);
+	const amountPagesReaded = Pagesbooks.reduce((acc, pages) => {
+		return (acc += pages);
+	}, 0);
+
 	return (
 		<UserAnalyticsContainer>
 			<UserInfosContainer>
 				<AvatarFrame>
-					<Image src={user1} height={72} width={72} alt='User avatar' />
+					<UserAvatar userSession={userSession} size={72} />
 				</AvatarFrame>
 
 				<div className='userName'>
-					<strong>Lisa Rosser</strong>
-					<time>membro desde 2022</time>
+					<strong>{user.name}</strong>
+					<time>{memberSince}</time>
 				</div>
 
 				<Rectangle>
@@ -27,7 +57,7 @@ export function UserAnalytics() {
 					<ItemContainer>
 						<Books size={32} />
 						<div className='itensGroup'>
-							<span>48</span>
+							<span>{amountReadBooks}</span>
 							<span>Livros lidos</span>
 						</div>
 					</ItemContainer>
@@ -35,7 +65,7 @@ export function UserAnalytics() {
 					<ItemContainer>
 						<BookOpenText size={32} />
 						<div className='itensGroup'>
-							<span>3853</span>
+							<span>{amountPagesReaded}</span>
 							<span>Páginas lidas</span>
 						</div>
 					</ItemContainer>
@@ -43,7 +73,7 @@ export function UserAnalytics() {
 					<ItemContainer>
 						<BookmarksSimple size={32} />
 						<div className='itensGroup'>
-							<span>3853</span>
+							<span>{mostReadCategories.join(', ')}</span>
 							<span>Categoria mais lida</span>
 						</div>
 					</ItemContainer>
@@ -51,7 +81,7 @@ export function UserAnalytics() {
 					<ItemContainer>
 						<Image src={BookStar} alt='book star icon' />
 						<div className='itensGroup'>
-							<span>10</span>
+							<span>{amountRatingBooks}</span>
 							<span>Livros avaliados</span>
 						</div>
 					</ItemContainer>
