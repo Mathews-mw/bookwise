@@ -14,8 +14,15 @@ import { Button } from '@/components/Action/Button/buttons';
 
 import { Container, Form } from './styles';
 
+enum EAcessTypes {
+	github = 'github',
+	google = 'google',
+	none = '',
+}
+
 interface IRegisterUserFormProps {
 	onClickEvent: () => void;
+	acessType: EAcessTypes;
 }
 
 const registerUserFormSchema = z.object({
@@ -29,7 +36,7 @@ const registerUserFormSchema = z.object({
 
 type registerUserFormData = z.infer<typeof registerUserFormSchema>;
 
-export function RegisterUserForm({ onClickEvent }: IRegisterUserFormProps) {
+export function RegisterUserForm({ onClickEvent, acessType }: IRegisterUserFormProps) {
 	const {
 		handleSubmit,
 		register,
@@ -48,9 +55,8 @@ export function RegisterUserForm({ onClickEvent }: IRegisterUserFormProps) {
 		try {
 			setActionLoading(true);
 
-			// const gitAcess = await signIn('github');
+			await signIn(acessType);
 
-			await signIn('google');
 			await api.post('/users/create', {
 				name,
 				username,
