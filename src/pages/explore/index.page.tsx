@@ -37,8 +37,6 @@ interface IBook extends Book {
 export default function Explore({ categories }: IExploreProps) {
 	const session = useSession();
 
-	console.log('session: ', session);
-
 	const [isOpen, setIsOpen] = useState(false);
 	const [isShortList, setIsShortList] = useState(true);
 	const [delayQuerySearch, setDelayQuerySearch] = useState('');

@@ -7,6 +7,7 @@ import { prisma } from '../prisma';
 export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res: NextApiResponse | NextPageContext['res']): Adapter {
 	return {
 		async createUser(user) {
+			console.log('createUser: ', user);
 			const { '@bookwise:userId': userIdOnCookies } = parseCookies({ req });
 
 			if (!userIdOnCookies) {
@@ -140,6 +141,8 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
 		},
 
 		async linkAccount(account) {
+			console.log('account adapter: ', account);
+
 			await prisma.account.create({
 				data: {
 					user_id: account.userId,
@@ -169,6 +172,7 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
 		},
 
 		async createSession({ sessionToken, userId, expires }) {
+			console.log('createSession: ', sessionToken, userId, expires);
 			await prisma.session.create({
 				data: {
 					user_id: userId,

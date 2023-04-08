@@ -55,12 +55,13 @@ export function RegisterUserForm({ onClickEvent, acessType }: IRegisterUserFormP
 		try {
 			setActionLoading(true);
 
-			await signIn(acessType);
-
 			await api.post('/users/create', {
 				name,
 				username,
 			});
+
+			const result = await signIn(acessType);
+			console.log('result: ', result);
 
 			setActionLoading(false);
 

@@ -10,19 +10,25 @@ interface IMyBookReviewCardProps {
 	bookAuthor: string;
 	bookCover: string | StaticImageData;
 	userOpinion: string;
-	puplishedAt: string;
 	userBookRating: number;
+	puplishedAt: Date;
+	updatedAt?: Date;
 }
 
-export function MyBookReviewCard({ bookTitle, bookAuthor, bookCover, userOpinion, puplishedAt, userBookRating }: IMyBookReviewCardProps) {
-	const publishedDate = dayjs(puplishedAt);
+export function MyBookReviewCard({ bookTitle, bookAuthor, bookCover, userOpinion, puplishedAt, updatedAt, userBookRating }: IMyBookReviewCardProps) {
+	let publishedDate = dayjs(puplishedAt);
+
+	if (updatedAt) {
+		publishedDate = dayjs(updatedAt);
+	}
+
 	const publishedDateFormatted = publishedDate.format('DD[ de ]MMMM[ às ]HH:mm');
 	const publishedDistanceToNow = publishedDate.fromNow();
 
 	return (
 		<Container>
 			<time title={publishedDateFormatted} dateTime={publishedDate.toISOString()}>
-				{publishedDistanceToNow}
+				{updatedAt && 'modificado'} {publishedDistanceToNow}
 			</time>
 			<CardContainer>
 				<HeaderCardContainer>

@@ -16,7 +16,7 @@ import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
 import { prisma } from '@/lib/prisma';
-import { Book, BookCategory, Category, RatingBook, UserBook, User as UserPrisma } from '@prisma/client';
+import { Book, BookCategory, BookReview, Category, RatingBook, UserBook, User as UserPrisma } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import lodash from 'lodash';
 
@@ -33,9 +33,10 @@ interface IPerfilProps {
 	userBooks: IUserBooks[];
 	ratingBooks: RatingBook[];
 	MostReadUniqueCategories: string[];
+	booksReviews: Array<BookReview & { book: Book }>;
 }
 
-export default function Perfil({ user, userBooks, ratingBooks, MostReadUniqueCategories }: IPerfilProps) {
+export default function Perfil({ user, userBooks, ratingBooks, MostReadUniqueCategories, booksReviews }: IPerfilProps) {
 	const session = useSession();
 
 	return (
@@ -50,32 +51,23 @@ export default function Perfil({ user, userBooks, ratingBooks, MostReadUniqueCat
 			<MyBookReviewsContainer>
 				<TextInput placeholder='Buscar livro avaliado' iconRight={<MagnifyingGlass size={20} />} />
 				<ReviewsContainer>
-					<MyBookReviewCard
-						bookTitle='Entendendo Algoritmos'
-						bookAuthor='Aditya Bhargava'
-						bookCover={Algoritmos}
-						userBookRating={4}
-						puplishedAt='2023-03-24 15:15:00'
-						userOpinion='Tristique massa sed enim lacinia odio. Congue ut faucibus nunc vitae non. Nam feugiat vel morbi viverra vitae mi. Vitae fringilla ut et suspendisse enim suspendisse vitae. Leo non eget lacus sollicitudin tristique pretium quam. Mollis et luctus amet sed convallis varius massa sagittis. Proin sed proin at leo quis ac sem. Nam donec accumsan curabitur amet tortor quam sit. Bibendum enim sit dui lorem urna amet elit rhoncus ut. Aliquet euismod vitae ut turpis. Aliquam amet integer pellentesque.'
-					/>
-
-					<MyBookReviewCard
-						bookTitle='O Hobbit'
-						bookAuthor='J.R.R. Tolkien'
-						bookCover={OHobbit}
-						userBookRating={3.5}
-						puplishedAt='2023-03-21 20:15:00'
-						userOpinion='Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis. Penatibus id vestibulum imperdiet a at imperdiet.'
-					/>
-
-					<MyBookReviewCard
-						bookTitle='O guia do mochileiro das galáxias'
-						bookAuthor='Douglas Adams'
-						bookCover={MochileirosGalaxias}
-						userBookRating={5}
-						puplishedAt='2023-03-11 22:25:00'
-						userOpinion='Ultrices nisl eu id id mattis. Adipiscing est sapien ut vestibulum nec enim. Nisi interdum orci malesuada nisi. Habitant placerat velit enim malesuada senectus ipsum. Ultricies nisl dictum integer hendrerit amet enim. Facilisis consectetur imperdiet ultrices mattis pharetra viverra magnis.'
-					/>
+					{booksReviews.map((review) => {
+						const userBookRating = ratingBooks.find((book) => {
+							return book.book_id === review.book_id;
+						});
+						return (
+							<MyBookReviewCard
+								key={review.id}
+								bookTitle={review.book.title}
+								bookAuthor={review.book.author}
+								bookCover={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${review.book.cover_image!}`}
+								userBookRating={Number(userBookRating?.rating)}
+								puplishedAt={review.created_at}
+								updatedAt={review.updated_at ?? undefined}
+								userOpinion={review.review}
+							/>
+						);
+					})}
 				</ReviewsContainer>
 			</MyBookReviewsContainer>
 
@@ -121,6 +113,15 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 					},
 				},
 			},
+		},
+	});
+
+	const booksReviews = await prisma.bookReview.findMany({
+		where: {
+			user_id: session?.user.id,
+		},
+		include: {
+			book: true,
 		},
 	});
 
@@ -198,6 +199,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 			session,
 			user: JSON.parse(JSON.stringify(user)),
 			userBooks,
+			booksReviews: JSON.parse(JSON.stringify(booksReviews)),
 			ratingBooks: JSON.parse(JSON.stringify(ratingBooks)),
 			MostReadUniqueCategories,
 		},

@@ -6,10 +6,6 @@ export const NavbarContainer = styled('div', {
 	justifyContent: 'space-between',
 	padding: '2.8rem',
 	height: '100%',
-
-	img: {
-		marginBottom: '4rem',
-	},
 });
 
 export const NavLinksContainer = styled('div', {

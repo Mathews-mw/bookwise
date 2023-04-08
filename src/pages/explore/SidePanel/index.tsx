@@ -12,6 +12,7 @@ import { UserAvatar } from '@/components/UserAvatar';
 import { ContextMenu } from '@/components/ContextMenu';
 import { ratingCalculate } from '@/utils/rating-calculate';
 import { Button } from '@/components/Action/Button/buttons';
+import { UserEditPostComment } from './UserEditPostComment';
 import { StarsRatingView } from '@/components/Rating/StarsRatingView';
 import { BookDetailSkeleton } from './SkeletonsSidePanel/BookDetailSkeleton';
 import { PostCommentSkeleton } from './SkeletonsSidePanel/PostCommentSkeleton';
@@ -36,7 +37,6 @@ import {
 } from './styles';
 
 import emptyImg from '../../../assets/free-time.png';
-import { UserEditPostComment } from './UserEditPostComment';
 
 interface IBookCategory extends BookCategory {
 	category: Category;
