@@ -3,52 +3,19 @@ import * as Collapsible from '@radix-ui/react-collapsible';
 import { keyframes } from '@stitches/react';
 
 export const BookReviewContainer = styled('div', {
-	display: 'flex',
-	flexDirection: 'column',
-	gap: '2rem',
-
 	padding: '1.5rem',
+	marginBottom: '2rem',
 	borderRadius: '$md',
 
 	maxWidth: 608,
 
-	background: '$gray700',
+	background: '$gray600',
 });
 
 export const HeaderReview = styled('div', {
 	display: 'flex',
 	justifyContent: 'space-between',
 	width: '100%',
-	'.profileInfos': {
-		display: 'flex',
-		gap: '1rem',
-
-		time: {
-			color: '$gray400',
-		},
-	},
-
-	'.group': {
-		display: 'flex',
-		flexDirection: 'column',
-
-		width: '100%',
-	},
-});
-
-export const ImageFrame = styled('div', {
-	borderRadius: '$full',
-	height: 44,
-	width: 44,
-	background: '$gradient-horizontal',
-
-	display: 'flex',
-	justifyContent: 'center',
-	alignItems: 'center',
-
-	img: {
-		borderRadius: '$full',
-	},
 });
 
 export const ReviewContainer = styled('div', {
@@ -80,9 +47,11 @@ export const BookInfos = styled('div', {
 
 export const CommentContainer = styled('div', {
 	p: {
-		display: 'inline',
-		textAlign: 'justify',
-		width: '100%',
+		overflow: 'hidden',
+		textOverflow: 'ellipsis',
+		display: '-webkit-box',
+		'-webkit-line-clamp': 2,
+		'-webkit-box-orient': 'vertical',
 
 		fontSize: 14,
 		color: '$gray300',

@@ -48,24 +48,21 @@ export function UserReviewCard({ userName, user, publishedDate, updatedAt, bookT
 		width: 300,
 	});
 
+	console.log('rating: ', rating);
+
 	return (
 		<BookReviewContainer>
-			<HeaderReview>
-				<div className='profileInfos'>
-					<div className='group'>
-						<span>{userName}</span>
-						<time title={publishedDateFormatted} dateTime={published_date.toISOString()}>
-							{publishedDistanceToNow}
-						</time>
-					</div>
-				</div>
-				<StarsRatingView rating={rating} />
-			</HeaderReview>
-
 			<ReviewContainer>
 				<Image src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${bookCover}`} height={152} width={108} quality={100} alt={`${bookTitle} cover`} />
 
 				<div className='group'>
+					<HeaderReview>
+						<time title={publishedDateFormatted} dateTime={published_date.toISOString()}>
+							{publishedDistanceToNow}
+						</time>
+						<StarsRatingView rating={rating} />
+					</HeaderReview>
+
 					<BookInfos>
 						<span>{bookTitle}</span>
 						<i>{bookAuthor}</i>
@@ -73,12 +70,7 @@ export function UserReviewCard({ userName, user, publishedDate, updatedAt, bookT
 
 					<CollapsibleRoot open={open} onOpenChange={setOpen} css={{ width: '100%' }}>
 						<CommentContainer>
-							<p>
-								{comment.substring(0, 229)} {!open ? '...' : <CollapsibleContent className='CollapsibleContent'>{comment.substring(229)}</CollapsibleContent>}
-							</p>
-							<CollapsibleTrigger asChild>
-								<CollapsibleButton>{!open ? 'ver mais' : 'ver menos'}</CollapsibleButton>
-							</CollapsibleTrigger>
+							<p>{comment}</p>
 						</CommentContainer>
 					</CollapsibleRoot>
 				</div>

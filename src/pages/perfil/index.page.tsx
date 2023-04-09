@@ -1,24 +1,20 @@
+import lodash from 'lodash';
 import { ReactElement } from 'react';
+import { GetServerSideProps } from 'next';
+import { useSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
 
+import { prisma } from '@/lib/prisma';
 import { Header } from '@/components/Header';
 import DefaultLayout from '@/layouts/Default';
 import { UserAnalytics } from './UserAnalytics';
 import { MyBookReviewCard } from './MyBookReviewCard';
 import { TextInput } from '@/components/Form/TextInput';
+import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
+import { Book, BookCategory, BookReview, Category, RatingBook, UserBook, User as UserPrisma } from '@prisma/client';
 
 import { MagnifyingGlass, User } from '@phosphor-icons/react';
 import { PerfilContainer, HeaderContainer, MyBookReviewsContainer, AnalyticsSidebarContainer, ReviewsContainer } from './styles';
-
-import OHobbit from '../../assets/o-hobbit.png';
-import Algoritmos from '../../assets/entendendo-algoritmos.png';
-import MochileirosGalaxias from '../../assets/o-guia-do-mochileiro-das-galaxias.png';
-import { GetServerSideProps } from 'next';
-import { getServerSession } from 'next-auth';
-import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
-import { prisma } from '@/lib/prisma';
-import { Book, BookCategory, BookReview, Category, RatingBook, UserBook, User as UserPrisma } from '@prisma/client';
-import { useSession } from 'next-auth/react';
-import lodash from 'lodash';
 
 interface IBook extends Book {
 	bookCategory: Array<BookCategory & { category: Category }>;
@@ -122,6 +118,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 		},
 		include: {
 			book: true,
+		},
+		orderBy: {
+			created_at: 'asc',
 		},
 	});
 

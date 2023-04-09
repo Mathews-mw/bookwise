@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 
 import { prisma } from '@/lib/prisma';
+import { ratingCalculate } from '../../utils/rating-calculate';
 import { Header } from '@/components/Header';
 import DefaultLayout from '@/layouts/Default';
 import { TrendingBooks } from './TredingBooks';
@@ -11,22 +12,15 @@ import { Book, BookReview, RatingBook, User } from '@prisma/client';
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
 
 import { CaretRight, ChartLineUp } from '@phosphor-icons/react';
-import {
-	MainContainer,
-	BreadcrumbTitleContainer,
-	RecentViewsContainer,
-	UserReviewContainer,
-	ReviewsContainer,
-	TrendingContainer,
-	TrandingBooksList,
-	NavButton,
-} from './styles';
+import { MainContainer, BreadcrumbTitleContainer, RecentViewsContainer, ReviewsContainer, TrendingContainer, TrandingBooksList, NavButton } from './styles';
 
 import RevolucaoBichos from '../../assets/Book.png';
 import Algoritmos from '../../assets/entendendo-algoritmos.png';
 import FimDaEternidade from '../../assets/o-fim-da-eternidade.png';
 import Habitos from '../../assets/14-habitos-de-desenvolvedores-altamente-produtivos.png';
 import { UserReviewCard } from './UserReviewCard';
+import { Button } from '@/components/Action/Button/buttons';
+import { useRouter } from 'next/router';
 
 interface IBookReviews extends BookReview {
 	book: Book;
@@ -39,6 +33,8 @@ interface IHomeProps {
 }
 
 export default function Home({ bookReviews, userLatestBookReview }: IHomeProps) {
+	const router = useRouter();
+
 	return (
 		<MainContainer>
 			<RecentViewsContainer>
@@ -48,22 +44,23 @@ export default function Home({ bookReviews, userLatestBookReview }: IHomeProps) 
 				</Header>
 
 				<BreadcrumbTitleContainer>
-					<span>Avaliações mais recentes</span>
+					<span>Sua última avaliação</span>
+					<NavButton onClick={() => router.push('/perfil')}>
+						Ver todos <CaretRight size={16} weight='bold' />
+					</NavButton>
 				</BreadcrumbTitleContainer>
 
-				<UserReviewContainer>
-					<UserReviewCard
-						userName={userLatestBookReview.user.name}
-						publishedDate={userLatestBookReview.created_at}
-						updatedAt={userLatestBookReview.updated_at ?? undefined}
-						bookTitle={userLatestBookReview.book.title}
-						bookAuthor={userLatestBookReview.book.author}
-						bookCover={userLatestBookReview.book.cover_image!}
-						comment={userLatestBookReview.review}
-						rating={Number(userLatestBookReview.user.ratingBook[0].rating)}
-						user={userLatestBookReview.user}
-					/>
-				</UserReviewContainer>
+				<UserReviewCard
+					userName={userLatestBookReview.user.name}
+					publishedDate={userLatestBookReview.created_at}
+					updatedAt={userLatestBookReview.updated_at ?? undefined}
+					bookTitle={userLatestBookReview.book.title}
+					bookAuthor={userLatestBookReview.book.author}
+					bookCover={userLatestBookReview.book.cover_image!}
+					comment={userLatestBookReview.review}
+					rating={Number(userLatestBookReview.user.ratingBook.find((book) => book.book_id === userLatestBookReview.book_id)?.rating)}
+					user={userLatestBookReview.user}
+				/>
 
 				<BreadcrumbTitleContainer>
 					<span>Avaliações mais recentes</span>
@@ -94,7 +91,7 @@ export default function Home({ bookReviews, userLatestBookReview }: IHomeProps) 
 			<TrendingContainer>
 				<BreadcrumbTitleContainer>
 					<span>Livros populares</span>
-					<NavButton>
+					<NavButton onClick={() => router.push('/explore')}>
 						Ver todos <CaretRight size={16} weight='bold' />
 					</NavButton>
 				</BreadcrumbTitleContainer>
@@ -148,6 +145,55 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 			created_at: 'desc',
 		},
 	});
+
+	const booksWithRating = await prisma.book.findMany({
+		include: {
+			ratingBook: true,
+		},
+	});
+
+	let mostPopularBooks: typeof booksWithRating = [];
+
+	for (let i = 0; i < booksWithRating.length; i++) {
+		console.log('current index: ', i);
+
+		const currentBookRatingAverage = ratingCalculate(booksWithRating[i].ratingBook);
+		let previousBookRatingAverage = 0;
+
+		if (mostPopularBooks.length === 0) {
+			mostPopularBooks.push(booksWithRating[i]);
+		}
+
+		if (mostPopularBooks.length === 1) {
+			previousBookRatingAverage = ratingCalculate(mostPopularBooks[0].ratingBook);
+
+			if (currentBookRatingAverage > previousBookRatingAverage) {
+				mostPopularBooks.unshift(booksWithRating[i]);
+			}
+
+			mostPopularBooks.push(booksWithRating[i]);
+		}
+
+		if (mostPopularBooks.length > 1) {
+			previousBookRatingAverage = ratingCalculate(mostPopularBooks[i - 1].ratingBook);
+			let count = 0;
+			while (count <= mostPopularBooks.length) {
+				const currentBookRatingAverage = ratingCalculate(booksWithRating[count].ratingBook);
+				const previousBookRatingAverage = ratingCalculate(mostPopularBooks[count - 1].ratingBook);
+				const nextBookRatingAverage = ratingCalculate(mostPopularBooks[count + 1].ratingBook);
+
+				if (currentBookRatingAverage > previousBookRatingAverage) {
+					mostPopularBooks.unshift(booksWithRating[i]);
+				} else if (currentBookRatingAverage < previousBookRatingAverage && currentBookRatingAverage > nextBookRatingAverage) {
+					mostPopularBooks.splice(count, 0, booksWithRating[i]);
+				}
+
+				count++;
+			}
+		}
+	}
+
+	console.log('mostPopularBooks: ', mostPopularBooks);
 
 	return {
 		props: {

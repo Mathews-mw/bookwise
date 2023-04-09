@@ -11,6 +11,7 @@ export const ImageFrame = styled('div', {
 
 	img: {
 		borderRadius: '$full',
+		objectFit: 'cover',
 	},
 });
 
