@@ -1,6 +1,6 @@
 import { styled } from '@/styles';
-import { keyframes } from '@stitches/react';
 import * as Collapsible from '@radix-ui/react-collapsible';
+import { keyframes } from '@stitches/react';
 
 export const BookReviewContainer = styled('div', {
 	display: 'flex',
@@ -80,9 +80,8 @@ export const BookInfos = styled('div', {
 
 export const CommentContainer = styled('div', {
 	p: {
-		display: 'inline-block',
+		display: 'inline',
 		textAlign: 'justify',
-		textJustify: 'inter-word',
 		width: '100%',
 
 		fontSize: 14,

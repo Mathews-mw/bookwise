@@ -39,6 +39,14 @@ export const RecentViewsContainer = styled('div', {
 	margin: '0 auto 1rem auto',
 });
 
+export const UserReviewContainer = styled('div', {
+	display: 'flex',
+	flexDirection: 'column',
+	maxWidth: 608,
+	height: 'auto',
+	margin: '0 auto 1rem auto',
+});
+
 export const ReviewsContainer = styled('div', {
 	display: 'flex',
 	flexDirection: 'column',

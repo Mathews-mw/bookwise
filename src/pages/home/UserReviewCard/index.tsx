@@ -32,10 +32,8 @@ interface IBookReviewCardProps {
 	user: User;
 }
 
-export function BookReviewCard({ userName, user, publishedDate, updatedAt, bookTitle, bookAuthor, bookCover, comment, rating }: IBookReviewCardProps) {
+export function UserReviewCard({ userName, user, publishedDate, updatedAt, bookTitle, bookAuthor, bookCover, comment, rating }: IBookReviewCardProps) {
 	const [open, setOpen] = useState(false);
-
-	console.log(rating);
 
 	let published_date = dayjs(publishedDate);
 
@@ -54,9 +52,6 @@ export function BookReviewCard({ userName, user, publishedDate, updatedAt, bookT
 		<BookReviewContainer>
 			<HeaderReview>
 				<div className='profileInfos'>
-					<div>
-						<UserAvatar userSession={user} size={40} />
-					</div>
 					<div className='group'>
 						<span>{userName}</span>
 						<time title={publishedDateFormatted} dateTime={published_date.toISOString()}>
@@ -79,7 +74,7 @@ export function BookReviewCard({ userName, user, publishedDate, updatedAt, bookT
 					<CollapsibleRoot open={open} onOpenChange={setOpen} css={{ width: '100%' }}>
 						<CommentContainer>
 							<p>
-								{comment.substring(0, 192)} {!open ? '...' : <CollapsibleContent className='CollapsibleContent'>{comment.substring(192)}</CollapsibleContent>}
+								{comment.substring(0, 229)} {!open ? '...' : <CollapsibleContent className='CollapsibleContent'>{comment.substring(229)}</CollapsibleContent>}
 							</p>
 							<CollapsibleTrigger asChild>
 								<CollapsibleButton>{!open ? 'ver mais' : 'ver menos'}</CollapsibleButton>

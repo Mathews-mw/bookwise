@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { User } from 'next-auth';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { queryClient } from '@/lib/react-query';
@@ -7,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { theme } from '@/styles';
 import { api } from '@/lib/axios';
+import { User } from '@prisma/client';
 import { Check, X } from '@phosphor-icons/react';
 import { UserAvatar } from '@/components/UserAvatar';
 import { TextArea } from '@/components/Form/TextArea';

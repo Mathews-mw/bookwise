@@ -30,7 +30,7 @@ export const BookInfos = styled('div', {
 
 	span: {
 		fontWeight: 'bold',
-		wordWrap: 'break-word',
+		textOverflow: 'ellipsis',
 	},
 
 	i: {

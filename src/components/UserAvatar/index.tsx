@@ -24,7 +24,7 @@ export function UserAvatar({ userSession, size = 32 }: IUserAvatarProps) {
 	return (
 		<ImageFrame style={{ width: size, height: size }}>
 			{userSession.avatar_url ? (
-				<Image src={userSession.avatar_url} width={size - 2} height={size - 2} alt='avatar do usuário' />
+				<Image src={userSession.avatar_url} width={size - 4} height={size - 4} alt='avatar do usuário' />
 			) : (
 				<LettersContainer style={{ width: size - 4, height: size - 4, fontSize: size / 3.2 }}>
 					<span>{firstLetterNames}</span>

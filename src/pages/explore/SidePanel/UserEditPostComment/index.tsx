@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { User } from 'next-auth';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { queryClient } from '@/lib/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { theme } from '@/styles';
@@ -14,12 +14,11 @@ import { Spinner } from '@/components/Loaders/Spinner';
 import { ErrorMessage } from '@/components/ErrorMessage';
 import { Button } from '@/components/Action/Button/buttons';
 import { ShowErrorRequest } from '@/utils/ShowErrorRequest';
+import { BookReview, RatingBook, User } from '@prisma/client';
 import { StarsRating } from '@/components/Rating/StarsRating';
 import { ShowSuccessRequest } from '@/utils/ShowSuccessRequest';
 
 import { Container, HeaderComment, TextComment } from './styles';
-import { useQuery } from '@tanstack/react-query';
-import { BookReview, RatingBook } from '@prisma/client';
 
 interface IBookReviewResponse extends BookReview {
 	user: {

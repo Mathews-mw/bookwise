@@ -6,9 +6,10 @@ import { Container, StarsGroup, StarFilled, StartEmpty } from './styles';
 interface IStarsRatingView {
 	totalStars?: number;
 	rating: number;
+	showAverage?: boolean;
 }
 
-export function StarsRatingView({ totalStars = 5, rating }: IStarsRatingView) {
+export function StarsRatingView({ totalStars = 5, rating, showAverage }: IStarsRatingView) {
 	return (
 		<Container>
 			{[...new Array(totalStars)].map((_, index) => {
@@ -22,7 +23,7 @@ export function StarsRatingView({ totalStars = 5, rating }: IStarsRatingView) {
 				const showRatingWithPrecision = isActiveRating && isRatingWithPrecision && isRatingEqualToIndex;
 
 				return (
-					<StarsGroup key={index}>
+					<StarsGroup key={index} title={showAverage ? `Média: ${rating}` : undefined}>
 						<StarFilled style={{ width: `${showRatingWithPrecision ? `${(activeState % 1) * 100}%` : '0%'}` }}>
 							<Star size={22} weight='fill' />
 						</StarFilled>

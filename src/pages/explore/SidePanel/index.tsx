@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import Image from 'next/image';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User } from 'next-auth/core/types';
 import { useQuery } from '@tanstack/react-query';
 
 import { theme } from '@/styles';
@@ -17,7 +16,7 @@ import { StarsRatingView } from '@/components/Rating/StarsRatingView';
 import { BookDetailSkeleton } from './SkeletonsSidePanel/BookDetailSkeleton';
 import { PostCommentSkeleton } from './SkeletonsSidePanel/PostCommentSkeleton';
 import { TitleContainerSkeleton } from './SkeletonsSidePanel/TitleContainerSkeleton';
-import { Book, BookCategory, Category, RatingBook, BookReview, UserBook } from '@prisma/client';
+import { Book, BookCategory, Category, RatingBook, BookReview, UserBook, User } from '@prisma/client';
 
 import { BookmarkSimple, BookOpen, X } from '@phosphor-icons/react';
 import {
@@ -113,7 +112,7 @@ export function SidePanel({ bookId, userSession, userBooks, onCloseDrawer }: ISi
 
 							<div className='view-rating'>
 								{book?.ratingBook && book.ratingBook.length > 0 ? (
-									<StarsRatingView rating={ratingCalculate(book.ratingBook)} />
+									<StarsRatingView rating={ratingCalculate(book.ratingBook)} showAverage />
 								) : (
 									<StarsRatingView rating={0} />
 								)}
