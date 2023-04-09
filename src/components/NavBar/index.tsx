@@ -1,15 +1,16 @@
 import Image from 'next/image';
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 
+import { theme } from '@/styles';
 import { NavLink } from './NavLink';
 import { UserAvatar } from '../UserAvatar';
 import { BookshelfIcon } from '../CustomIcons/BookshelfIcon';
 
-import { NavbarContainer, NavLinksContainer, UserContainer } from './styles';
 import { Binoculars, ChartLineUp, Notebook, SignOut, User } from '@phosphor-icons/react';
+import { NavbarContainer, NavLinksContainer, UserContainer, LogoContainer } from './styles';
+
 import Logo from '../../assets/Logo.png';
-import { useState } from 'react';
-import { theme } from '@/styles';
 
 export function NavBar() {
 	const session = useSession();
@@ -23,7 +24,9 @@ export function NavBar() {
 	return (
 		<NavbarContainer>
 			<div>
-				<Image src={Logo} quality={100} height={32} alt='App logo' />
+				<LogoContainer>
+					<Image src={Logo} quality={100} height={32} alt='App logo' />
+				</LogoContainer>
 
 				<NavLinksContainer>
 					<NavLink href={'/home'} getUrlPath={() => handleSetUrlPath()}>

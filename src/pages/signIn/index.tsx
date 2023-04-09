@@ -35,6 +35,8 @@ export default function SignIn({ account }: ISignIn) {
 	const router = useRouter();
 	const session = useSession();
 
+	console.log('session: ', session);
+
 	const [selectedTab, setSelectedTab] = useState('authentications');
 	const [acessType, setAcessType] = useState<EAcessTypes>(EAcessTypes.none);
 

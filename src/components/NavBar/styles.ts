@@ -8,6 +8,10 @@ export const NavbarContainer = styled('div', {
 	height: '100%',
 });
 
+export const LogoContainer = styled('div', {
+	marginBottom: '4rem',
+});
+
 export const NavLinksContainer = styled('div', {
 	display: 'flex',
 	flexDirection: 'column',

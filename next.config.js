@@ -4,11 +4,17 @@ const nextConfig = {
 	swcMinify: true,
 	pageExtensions: ['page.tsx', 'api.ts', 'api.tsx'],
 	images: {
-		domains: ['localhost', 'avatars.githubusercontent.com'],
+		domains: ['localhost', 'avatars.githubusercontent.com', 'images.unsplash.com'],
 		remotePatterns: [
 			{
 				protocol: 'https',
 				hostname: 'avatars.githubusercontent.com/**',
+				port: '',
+				pathname: '/',
+			},
+			{
+				protocol: 'https',
+				hostname: 'images.unsplash.com/**',
 				port: '',
 				pathname: '/',
 			},

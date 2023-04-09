@@ -54,6 +54,8 @@ export const UserStatisticsContainer = styled('div', {
 	display: 'flex',
 	flexDirection: 'column',
 	gap: '2.5rem',
+
+	padding: '0 2rem',
 });
 
 export const ItemContainer = styled('div', {

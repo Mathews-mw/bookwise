@@ -3,6 +3,8 @@ import { useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import * as Collapsible from '@radix-ui/react-collapsible';
 
+import { User } from '@prisma/client';
+import { UserAvatar } from '@/components/UserAvatar';
 import { StarsRating } from '@/components/Rating/StarsRating';
 
 import { styled } from '@/styles';
@@ -10,32 +12,39 @@ import {
 	BookInfos,
 	BookReviewContainer,
 	HeaderReview,
-	ImageFrame,
 	ReviewContainer,
 	CommentContainer,
 	CollapsibleContent,
 	CollapsibleTrigger,
 	CollapsibleButton,
 } from './styles';
+import { StarsRatingView } from '@/components/Rating/StarsRatingView';
 
 interface IBookReviewCardProps {
 	userName: string;
-	publishedDate: string;
-	userAvatar: string | StaticImageData;
+	publishedDate: Date;
+	updatedAt?: Date;
 	bookTitle: string;
 	bookAuthor: string;
 	bookCover: string | StaticImageData;
 	comment: string;
+	rating: number;
+	user: User;
 }
 
-export function BookReviewCard({ userName, publishedDate, userAvatar, bookTitle, bookAuthor, bookCover, comment }: IBookReviewCardProps) {
+export function BookReviewCard({ userName, user, publishedDate, updatedAt, bookTitle, bookAuthor, bookCover, comment, rating }: IBookReviewCardProps) {
 	const [open, setOpen] = useState(false);
 
-	const published_date = dayjs(publishedDate);
+	console.log(rating);
+
+	let published_date = dayjs(publishedDate);
+
+	if (updatedAt) {
+		published_date = dayjs(updatedAt);
+	}
+
 	const publishedDateFormatted = published_date.format('DD[ de ]MMMM[ às ]HH:mm');
 	const publishedDistanceToNow = published_date.fromNow();
-
-	const precision = 1 / 2;
 
 	const CollapsibleRoot = styled(Collapsible.Root, {
 		width: 300,
@@ -45,9 +54,10 @@ export function BookReviewCard({ userName, publishedDate, userAvatar, bookTitle,
 		<BookReviewContainer>
 			<HeaderReview>
 				<div className='profileInfos'>
-					<ImageFrame>
+					{/* <ImageFrame>
 						<Image src={userAvatar} height={40} alt='Profile picture' />
-					</ImageFrame>
+					</ImageFrame> */}
+					<UserAvatar userSession={user} />
 					<div className='group'>
 						<span>{userName}</span>
 						<time title={publishedDateFormatted} dateTime={published_date.toISOString()}>
@@ -55,11 +65,11 @@ export function BookReviewCard({ userName, publishedDate, userAvatar, bookTitle,
 						</time>
 					</div>
 				</div>
-				<StarsRating precision={precision} />
+				<StarsRatingView rating={rating} />
 			</HeaderReview>
 
 			<ReviewContainer>
-				<Image src={bookCover} height={152} width={108} quality={100} alt={`${bookTitle} cover`} />
+				<Image src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${bookCover}`} height={152} width={108} quality={100} alt={`${bookTitle} cover`} />
 
 				<div className='group'>
 					<BookInfos>

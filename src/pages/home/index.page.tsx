@@ -1,25 +1,35 @@
 import { ReactElement } from 'react';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
 
+import { prisma } from '@/lib/prisma';
+import { Header } from '@/components/Header';
 import DefaultLayout from '@/layouts/Default';
 import { TrendingBooks } from './TredingBooks';
 import { BookReviewCard } from './BookReviewCard';
+import { Book, BookReview, RatingBook, User } from '@prisma/client';
+import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
 
 import { CaretRight, ChartLineUp } from '@phosphor-icons/react';
 import { MainContainer, BreadcrumbTitleContainer, RecentViewsContainer, ReviewsContainer, TrendingContainer, TrandingBooksList, NavButton } from './styles';
 
-import user1 from '../../assets/user1.jpg';
-import user2 from '../../assets/user2.jpg';
-import user3 from '../../assets/user3.jpg';
-import HobbitCover from '../../assets/o-hobbit.png';
 import RevolucaoBichos from '../../assets/Book.png';
 import Algoritmos from '../../assets/entendendo-algoritmos.png';
 import FimDaEternidade from '../../assets/o-fim-da-eternidade.png';
-import PragmaticProgrammer from '../../assets/o-programador-pragmatico.png';
-import GuiaGalaxia from '../../assets/o-guia-do-mochileiro-das-galaxias.png';
 import Habitos from '../../assets/14-habitos-de-desenvolvedores-altamente-produtivos.png';
-import { Header } from '@/components/Header';
 
-export default function Home() {
+interface IBookReviews extends BookReview {
+	book: Book;
+	user: User & { ratingBook: RatingBook[] };
+}
+
+interface IHomeProps {
+	bookReviews: IBookReviews[];
+}
+
+export default function Home({ bookReviews }: IHomeProps) {
+	console.log(bookReviews);
+
 	return (
 		<MainContainer>
 			<RecentViewsContainer>
@@ -33,35 +43,25 @@ export default function Home() {
 				</BreadcrumbTitleContainer>
 
 				<ReviewsContainer>
-					<BookReviewCard
-						userName='Angela Vogl'
-						publishedDate='2023-03-21 20:15:00'
-						userAvatar={user1}
-						bookTitle='O Hobbit'
-						bookAuthor='J.R.R. Tolkien'
-						bookCover={HobbitCover}
-						comment='Semper et sapien proin vitae nisi. Feugiat neque integer donec et aenean posuere amet ultrices. Cras fermentum id pulvinar varius leo a in. Amet libero pharetra nunc elementum fringilla velit ipsum. Sed vulputate massa velit nibh. Semper et sapien proin vitae nisi. Feugiat neque integer donec et aenean posuere amet ultrices. Cras fermentum id pulvinar varius leo a in. Amet libero pharetra nunc elementum fringilla velit ipsum. Sed vulputate massa velit nibh.'
-					/>
+					{bookReviews.map((review) => {
+						const userBookRating = review.user.ratingBook.find((rating) => rating.book_id === review.book_id);
 
-					<BookReviewCard
-						userName='Dalton Paden'
-						publishedDate='2023-02-18 15:25:30'
-						userAvatar={user2}
-						bookTitle='O guia do mochileiro das galáxias'
-						bookAuthor='Douglas Adams'
-						bookCover={GuiaGalaxia}
-						comment='Semper et sapien proin vitae nisi. Feugiat neque integer donec et aenean posuere amet ultrices. Cras fermentum id pulvinar varius leo a in. Amet libero pharetra nunc elementum fringilla velit ipsum. Sed vulputate massa velit nibh. Semper et sapien proin vitae nisi. Feugiat neque integer donec et aenean posuere amet ultrices. Cras fermentum id pulvinar varius leo a in. Amet libero pharetra nunc elementum fringilla velit ipsum. Sed vulputate massa velit nibh.'
-					/>
-
-					<BookReviewCard
-						userName='Camilla Moccha'
-						publishedDate='2023-03-12 21:37:24'
-						userAvatar={user3}
-						bookTitle='O Programador Pragmático'
-						bookAuthor='Andrew Hunt'
-						bookCover={PragmaticProgrammer}
-						comment='Semper et sapien proin vitae nisi. Feugiat neque integer donec et aenean posuere amet ultrices. Cras fermentum id pulvinar varius leo a in. Amet libero pharetra nunc elementum fringilla velit ipsum. Sed vulputate massa velit nibh. Semper et sapien proin vitae nisi. Feugiat neque integer donec et aenean posuere amet ultrices. Cras fermentum id pulvinar varius leo a in. Amet libero pharetra nunc elementum fringilla velit ipsum. Sed vulputate massa velit nibh. Semper et sapien proin vitae nisi. Feugiat neque integer donec et aenean posuere amet ultrices. Cras fermentum id pulvinar varius leo a in. Amet libero pharetra nunc elementum fringilla velit ipsum. Sed vulputate massa velit nibh. Semper et sapien proin vitae nisi. Feugiat neque integer donec et aenean posuere amet ultrices. Cras fermentum id pulvinar varius leo a in. Amet libero pharetra nunc elementum fringilla velit ipsum. Sed vulputate massa velit nibh.'
-					/>
+						console.log('userBookRating: ', userBookRating);
+						return (
+							<BookReviewCard
+								key={review.id}
+								userName={review.user.name}
+								publishedDate={review.created_at}
+								updatedAt={review.updated_at ?? undefined}
+								bookTitle={review.book.title}
+								bookAuthor={review.book.author}
+								bookCover={review.book.cover_image!}
+								comment={review.review}
+								rating={Number(userBookRating?.rating)}
+								user={review.user}
+							/>
+						);
+					})}
 				</ReviewsContainer>
 			</RecentViewsContainer>
 
@@ -86,4 +86,30 @@ export default function Home() {
 
 Home.getLayout = function getLayout(page: ReactElement) {
 	return <DefaultLayout>{page}</DefaultLayout>;
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+	const session = await getServerSession(req, res, buildNextAuthOptions(req, res));
+
+	const bookReviews = await prisma.bookReview.findMany({
+		include: {
+			book: true,
+			user: {
+				include: {
+					ratingBook: true,
+				},
+			},
+		},
+		orderBy: {
+			created_at: 'desc',
+		},
+		take: 8,
+	});
+
+	return {
+		props: {
+			session,
+			bookReviews: JSON.parse(JSON.stringify(bookReviews)),
+		},
+	};
 };
