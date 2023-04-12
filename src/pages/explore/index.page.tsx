@@ -14,7 +14,7 @@ import { Header } from '@/components/Header';
 import DefaultLayout from '@/layouts/Default';
 import { SkeletonBookCard } from './SkeletonBookCard';
 import { TextInput } from '@/components/Form/TextInput';
-import { Book, BookCategory, Category, RatingBook, UserBook } from '@prisma/client';
+import { Book, BookCategory, Category, RatingBook, User, UserBook } from '@prisma/client';
 
 import { Binoculars, MagnifyingGlass, MinusCircle, PlusCircle } from '@phosphor-icons/react';
 import { ExploreContainer, HeaderContainer, CategoriesContainer, CategoryTag, BooksListContainer, ShowAllButton } from './styles';
@@ -36,6 +36,7 @@ interface IBook extends Book {
 
 export default function Explore({ categories }: IExploreProps) {
 	const session = useSession();
+	const user = session.data?.user;
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [isShortList, setIsShortList] = useState(true);
@@ -158,7 +159,7 @@ export default function Explore({ categories }: IExploreProps) {
 				{!!selectedBook && (
 					<SidePanel
 						bookId={selectedBook.id}
-						userSession={session.data?.user}
+						userSession={user}
 						userBooks={userBooks?.find((item) => item.book_id === selectedBook.id)}
 						onCloseDrawer={toggleDrawer}
 					/>

@@ -5,7 +5,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
-import { Nunito } from "next/font/google";
+import { Nunito } from 'next/font/google';
 import { queryClient } from '@/lib/react-query';
 import { ReactElement, ReactNode } from 'react';
 import { ToastContainer } from 'react-toastify';

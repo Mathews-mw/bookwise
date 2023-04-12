@@ -12,16 +12,17 @@ interface ITrendingProps {
 }
 
 export function TrendingBooks({ bookTitle, bookAuthor, bookCover, rating }: ITrendingProps) {
+	console.log('rating: ', rating);
 	return (
 		<TrendingContainer>
-			<Image width={64} height={94} src={bookCover} alt='Book cover' />
+			<Image width={64} height={94} src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${bookCover}`} alt='Book cover' />
 
 			<div className='group'>
 				<BookInfos>
 					<span>{bookTitle}</span>
 					<i>{bookAuthor}</i>
 				</BookInfos>
-				<StarsRatingView rating={rating} />
+				<StarsRatingView rating={rating} showAverage />
 			</div>
 		</TrendingContainer>
 	);

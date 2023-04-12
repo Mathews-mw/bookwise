@@ -14,13 +14,9 @@ import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
 import { CaretRight, ChartLineUp } from '@phosphor-icons/react';
 import { MainContainer, BreadcrumbTitleContainer, RecentViewsContainer, ReviewsContainer, TrendingContainer, TrandingBooksList, NavButton } from './styles';
 
-import RevolucaoBichos from '../../assets/Book.png';
-import Algoritmos from '../../assets/entendendo-algoritmos.png';
-import FimDaEternidade from '../../assets/o-fim-da-eternidade.png';
-import Habitos from '../../assets/14-habitos-de-desenvolvedores-altamente-produtivos.png';
 import { UserReviewCard } from './UserReviewCard';
-import { Button } from '@/components/Action/Button/buttons';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 interface IBookReviews extends BookReview {
 	book: Book;
@@ -30,9 +26,11 @@ interface IBookReviews extends BookReview {
 interface IHomeProps {
 	bookReviews: IBookReviews[];
 	userLatestBookReview: IBookReviews;
+	top4MostPopularBooks: Array<Book & { ratingBook: RatingBook; average: number }>;
 }
 
-export default function Home({ bookReviews, userLatestBookReview }: IHomeProps) {
+export default function Home({ bookReviews, userLatestBookReview, top4MostPopularBooks }: IHomeProps) {
+	const session = useSession();
 	const router = useRouter();
 
 	return (
@@ -43,24 +41,27 @@ export default function Home({ bookReviews, userLatestBookReview }: IHomeProps) 
 					<h3>Início</h3>
 				</Header>
 
-				<BreadcrumbTitleContainer>
-					<span>Sua última avaliação</span>
-					<NavButton onClick={() => router.push('/perfil')}>
-						Ver todos <CaretRight size={16} weight='bold' />
-					</NavButton>
-				</BreadcrumbTitleContainer>
-
-				<UserReviewCard
-					userName={userLatestBookReview.user.name}
-					publishedDate={userLatestBookReview.created_at}
-					updatedAt={userLatestBookReview.updated_at ?? undefined}
-					bookTitle={userLatestBookReview.book.title}
-					bookAuthor={userLatestBookReview.book.author}
-					bookCover={userLatestBookReview.book.cover_image!}
-					comment={userLatestBookReview.review}
-					rating={Number(userLatestBookReview.user.ratingBook.find((book) => book.book_id === userLatestBookReview.book_id)?.rating)}
-					user={userLatestBookReview.user}
-				/>
+				{session.status === 'authenticated' && (
+					<>
+						<BreadcrumbTitleContainer>
+							<span>Sua última avaliação</span>
+							<NavButton onClick={() => router.push('/perfil')}>
+								Ver todos <CaretRight size={16} weight='bold' />
+							</NavButton>
+						</BreadcrumbTitleContainer>
+						<UserReviewCard
+							userName={userLatestBookReview.user.name}
+							publishedDate={userLatestBookReview.created_at}
+							updatedAt={userLatestBookReview.updated_at ?? undefined}
+							bookTitle={userLatestBookReview.book.title}
+							bookAuthor={userLatestBookReview.book.author}
+							bookCover={userLatestBookReview.book.cover_image!}
+							comment={userLatestBookReview.review}
+							rating={Number(userLatestBookReview.user.ratingBook.find((book) => book.book_id === userLatestBookReview.book_id)?.rating)}
+							user={userLatestBookReview.user}
+						/>
+					</>
+				)}
 
 				<BreadcrumbTitleContainer>
 					<span>Avaliações mais recentes</span>
@@ -97,10 +98,9 @@ export default function Home({ bookReviews, userLatestBookReview }: IHomeProps) 
 				</BreadcrumbTitleContainer>
 
 				<TrandingBooksList>
-					<TrendingBooks bookTitle='A revolução dos bichos' bookAuthor='George Orwell' bookCover={RevolucaoBichos} rating={3} />
-					<TrendingBooks bookTitle='14 hábitos de desenvolvedores altamente produtivos' bookAuthor='Zeno Rocha' bookCover={Habitos} rating={3.5} />
-					<TrendingBooks bookTitle='O fim da eternidade' bookAuthor='Issac Asimov' bookCover={FimDaEternidade} rating={5} />
-					<TrendingBooks bookTitle='Entendendo Algoritmos' bookAuthor='Aditya Bhargava' bookCover={Algoritmos} rating={3.5} />
+					{top4MostPopularBooks.map((book) => {
+						return <TrendingBooks key={book.id} bookTitle={book.title} bookAuthor={book.author} bookCover={book.cover_image!} rating={book.average} />;
+					})}
 				</TrandingBooksList>
 			</TrendingContainer>
 		</MainContainer>
@@ -152,54 +152,31 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 		},
 	});
 
-	let mostPopularBooks: typeof booksWithRating = [];
+	const averageRatingBooks = booksWithRating.map((book) => {
+		const average = ratingCalculate(book.ratingBook);
 
-	for (let i = 0; i < booksWithRating.length; i++) {
-		console.log('current index: ', i);
+		return {
+			...book,
+			average,
+		};
+	});
 
-		const currentBookRatingAverage = ratingCalculate(booksWithRating[i].ratingBook);
-		let previousBookRatingAverage = 0;
+	const filteredOnlyRatedBooks = averageRatingBooks.filter((book) => {
+		return !isNaN(book.average);
+	});
 
-		if (mostPopularBooks.length === 0) {
-			mostPopularBooks.push(booksWithRating[i]);
-		}
+	const mostPopularBooks = filteredOnlyRatedBooks.sort((prev, current) => {
+		return current.average - prev.average;
+	});
 
-		if (mostPopularBooks.length === 1) {
-			previousBookRatingAverage = ratingCalculate(mostPopularBooks[0].ratingBook);
-
-			if (currentBookRatingAverage > previousBookRatingAverage) {
-				mostPopularBooks.unshift(booksWithRating[i]);
-			}
-
-			mostPopularBooks.push(booksWithRating[i]);
-		}
-
-		if (mostPopularBooks.length > 1) {
-			previousBookRatingAverage = ratingCalculate(mostPopularBooks[i - 1].ratingBook);
-			let count = 0;
-			while (count <= mostPopularBooks.length) {
-				const currentBookRatingAverage = ratingCalculate(booksWithRating[count].ratingBook);
-				const previousBookRatingAverage = ratingCalculate(mostPopularBooks[count - 1].ratingBook);
-				const nextBookRatingAverage = ratingCalculate(mostPopularBooks[count + 1].ratingBook);
-
-				if (currentBookRatingAverage > previousBookRatingAverage) {
-					mostPopularBooks.unshift(booksWithRating[i]);
-				} else if (currentBookRatingAverage < previousBookRatingAverage && currentBookRatingAverage > nextBookRatingAverage) {
-					mostPopularBooks.splice(count, 0, booksWithRating[i]);
-				}
-
-				count++;
-			}
-		}
-	}
-
-	console.log('mostPopularBooks: ', mostPopularBooks);
+	const top4MostPopularBooks = mostPopularBooks.splice(0, 4);
 
 	return {
 		props: {
 			session,
 			bookReviews: JSON.parse(JSON.stringify(bookReviews)),
 			userLatestBookReview: JSON.parse(JSON.stringify(userLatestBookReview)),
+			top4MostPopularBooks: JSON.parse(JSON.stringify(top4MostPopularBooks)),
 		},
 	};
 };
