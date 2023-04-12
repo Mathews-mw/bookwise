@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import { NextPage } from 'next';
+import ReactModal from 'react-modal';
 import type { AppProps } from 'next/app';
 import { Nunito } from 'next/font/google';
 import { queryClient } from '@/lib/react-query';
@@ -16,6 +17,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { globalStyles } from '@/styles/global';
 import { SkeletonTheme } from 'react-loading-skeleton';
 
+ReactModal.setAppElement('#root');
 const nunito = Nunito({ subsets: ['latin'] });
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {

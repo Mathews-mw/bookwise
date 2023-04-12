@@ -37,6 +37,7 @@ import {
 } from './styles';
 
 import emptyImg from '../../../assets/free-time.png';
+import { LoginAlert } from './LoginAlert';
 
 interface IBookCategory extends BookCategory {
 	category: Category;
@@ -61,12 +62,18 @@ interface ISidePanelProps {
 
 const customStyles = {
 	content: {
-		top: '50%',
-		left: '50%',
-		right: 'auto',
-		bottom: 'auto',
-		marginRight: '-50%',
-		transform: 'translate(-50%, -50%)',
+		margin: 'auto',
+		maxHeight: 'max-content',
+		width: 'max-content',
+		alignSelf: 'center',
+		borderRadius: 8,
+		boxShadow: 'rgb(0 0 0 / 30%) 0px 0px 30px',
+		padding: 0,
+		border: 'none',
+	},
+	overlay: {
+		backgroundColor: 'rgba(0,0,0,0.5)',
+		zIndex: 1050,
 	},
 };
 
@@ -268,7 +275,9 @@ export function SidePanel({ bookId, userSession, userBooks, onCloseDrawer }: ISi
 				)}
 			</Container>
 
-			<Modal isOpen={modalIsOpen} onRequestClose={() => setIsOpen(false)} style={customStyles} contentLabel='Example Modal'></Modal>
+			<Modal isOpen={modalIsOpen} onRequestClose={() => setIsOpen(false)} style={customStyles} contentLabel='Example Modal'>
+				<LoginAlert />
+			</Modal>
 		</>
 	);
 }
