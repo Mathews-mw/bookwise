@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { Multistep } from '@/components/Multistep';
@@ -20,6 +20,7 @@ import { getServerSession } from 'next-auth';
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
 import { prisma } from '@/lib/prisma';
 import { Account } from '@prisma/client';
+import { api } from '@/lib/axios';
 
 enum EAcessTypes {
 	github = 'github',
@@ -35,8 +36,6 @@ export default function SignIn({ account }: ISignIn) {
 	const router = useRouter();
 	const session = useSession();
 
-	console.log('session: ', session);
-
 	const [selectedTab, setSelectedTab] = useState('authentications');
 	const [acessType, setAcessType] = useState<EAcessTypes>(EAcessTypes.none);
 
@@ -47,7 +46,12 @@ export default function SignIn({ account }: ISignIn) {
 		router.push('/home');
 	}
 
-	function handlerAcessType(tab: string, type: EAcessTypes) {
+	async function handlerAcessType(tab: string, type: EAcessTypes) {
+		const result = await signIn(acessType);
+		console.log('login result: ', result);
+
+		// const { data } = await api.get(`/users/${session.data?.user.username}/get-user`);
+
 		setSelectedTab(tab);
 		setAcessType(type);
 	}
@@ -124,7 +128,7 @@ export default function SignIn({ account }: ISignIn) {
 									</>
 								) : (
 									<RegisterUserContainer>
-										<RegisterUserForm acessType={acessType} onClickEvent={() => handlerAcessType('authentications', EAcessTypes.none)} />
+										<RegisterUserForm onClickEvent={() => handlerAcessType('authentications', EAcessTypes.none)} />
 									</RegisterUserContainer>
 								)}
 							</LoginBox>
@@ -146,6 +150,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 			user_id: session?.user.id,
 		},
 	});
+
+	console.log('account: ', account);
 
 	return {
 		props: {

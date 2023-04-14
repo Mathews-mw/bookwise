@@ -69,6 +69,7 @@ const customStyles = {
 		borderRadius: 8,
 		boxShadow: 'rgb(0 0 0 / 30%) 0px 0px 30px',
 		padding: 0,
+		background: '#181C2A',
 		border: 'none',
 	},
 	overlay: {
@@ -86,7 +87,7 @@ export function SidePanel({ bookId, userSession, userBooks, onCloseDrawer }: ISi
 		if (userSession) {
 			setShowUserCommentCard(!showUserCommentCard);
 		} else {
-			alert('você precisa estar logado');
+			setIsOpen(true);
 		}
 	}
 
@@ -176,7 +177,6 @@ export function SidePanel({ bookId, userSession, userBooks, onCloseDrawer }: ISi
 					<TitleContainer>
 						<div className='group-title'>
 							<span>Avaliações</span>
-							<button onClick={() => setIsOpen(true)}>modal</button>
 							{UserAlreadyRatedBook && <small>Você já avaliou esse livro 😀</small>}
 						</div>
 						{UserAlreadyRatedBook ? (
@@ -276,7 +276,7 @@ export function SidePanel({ bookId, userSession, userBooks, onCloseDrawer }: ISi
 			</Container>
 
 			<Modal isOpen={modalIsOpen} onRequestClose={() => setIsOpen(false)} style={customStyles} contentLabel='Example Modal'>
-				<LoginAlert />
+				<LoginAlert closeModal={() => setIsOpen(!modalIsOpen)} />
 			</Modal>
 		</>
 	);

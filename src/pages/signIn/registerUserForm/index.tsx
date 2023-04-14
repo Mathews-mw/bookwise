@@ -2,7 +2,6 @@ import { z } from 'zod';
 import { useState } from 'react';
 import { AxiosError } from 'axios';
 import { useRouter } from 'next/router';
-import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -14,15 +13,8 @@ import { Button } from '@/components/Action/Button/buttons';
 
 import { Container, Form } from './styles';
 
-enum EAcessTypes {
-	github = 'github',
-	google = 'google',
-	none = '',
-}
-
 interface IRegisterUserFormProps {
 	onClickEvent: () => void;
-	acessType: EAcessTypes;
 }
 
 const registerUserFormSchema = z.object({
@@ -36,7 +28,7 @@ const registerUserFormSchema = z.object({
 
 type registerUserFormData = z.infer<typeof registerUserFormSchema>;
 
-export function RegisterUserForm({ onClickEvent, acessType }: IRegisterUserFormProps) {
+export function RegisterUserForm({ onClickEvent }: IRegisterUserFormProps) {
 	const {
 		handleSubmit,
 		register,
@@ -59,9 +51,6 @@ export function RegisterUserForm({ onClickEvent, acessType }: IRegisterUserFormP
 				name,
 				username,
 			});
-
-			const result = await signIn(acessType);
-			console.log('result: ', result);
 
 			setActionLoading(false);
 

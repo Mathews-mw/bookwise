@@ -1,16 +1,21 @@
 import Image from 'next/image';
-import { Container, CloseBtnContainer, Title, OptionsLoginContainer, OptionLogin } from './styles';
 
 import LogoGit from '../../../../assets/icons_github.svg';
 import LogoGoogle from '../../../../assets/logos_google-icon.svg';
-import { X } from '@phosphor-icons/react';
 
-export function LoginAlert() {
+import { X } from '@phosphor-icons/react';
+import { Container, CloseBtnContainer, Title, OptionsLoginContainer, OptionLogin } from './styles';
+
+interface ILoginAlertProps {
+	closeModal: () => void;
+}
+
+export function LoginAlert({ closeModal }: ILoginAlertProps) {
 	return (
 		<Container>
 			<CloseBtnContainer>
 				<button>
-					<X size={24} />
+					<X size={24} onClick={closeModal} />
 				</button>
 			</CloseBtnContainer>
 

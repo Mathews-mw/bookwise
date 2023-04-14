@@ -47,6 +47,11 @@ export const OptionLogin = styled('div', {
 	borderRadius: '8px',
 
 	background: '$gray600',
+	cursor: 'pointer',
+
+	'&:hover': {
+		color: '$gray400',
+	},
 
 	span: {
 		fontWeight: '$bold',
