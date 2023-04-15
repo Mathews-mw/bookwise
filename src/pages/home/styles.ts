@@ -1,8 +1,8 @@
 import { styled } from '@/styles';
 
-export const MainContainer = styled('div', {
+export const HomeContainer = styled('div', {
 	display: 'grid',
-	gridTemplateColumns: '1fr minmax(18.75rem, 20.25rem)',
+	gridTemplateColumns: '1fr minmax(18.75rem, 30.25rem)',
 	gridGap: '0.5rem',
 });
 

@@ -93,7 +93,7 @@ export const LoginOptionBox = styled('button', {
 	'&:disabled': {
 		opacity: 0.6,
 		cursor: 'initial',
-		border: '1px solid $green100',
+		color: '$gray400',
 	},
 
 	'.not-connected': {

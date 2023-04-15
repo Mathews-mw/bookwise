@@ -12,7 +12,7 @@ import { Book, BookReview, RatingBook, User } from '@prisma/client';
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
 
 import { CaretRight, ChartLineUp } from '@phosphor-icons/react';
-import { MainContainer, BreadcrumbTitleContainer, RecentViewsContainer, ReviewsContainer, TrendingContainer, TrandingBooksList, NavButton } from './styles';
+import { HomeContainer, BreadcrumbTitleContainer, RecentViewsContainer, ReviewsContainer, TrendingContainer, TrandingBooksList, NavButton } from './styles';
 
 import { UserReviewCard } from './UserReviewCard';
 import { useRouter } from 'next/router';
@@ -34,7 +34,7 @@ export default function Home({ bookReviews, userLatestBookReview, top4MostPopula
 	const router = useRouter();
 
 	return (
-		<MainContainer>
+		<HomeContainer>
 			<RecentViewsContainer>
 				<Header css={{ padding: '40px 0' }}>
 					<ChartLineUp size={32} />
@@ -103,7 +103,7 @@ export default function Home({ bookReviews, userLatestBookReview, top4MostPopula
 					})}
 				</TrandingBooksList>
 			</TrendingContainer>
-		</MainContainer>
+		</HomeContainer>
 	);
 }
 

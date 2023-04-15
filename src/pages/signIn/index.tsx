@@ -19,8 +19,9 @@ import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
 import { prisma } from '@/lib/prisma';
-import { Account } from '@prisma/client';
+import { Account, Session, User } from '@prisma/client';
 import { api } from '@/lib/axios';
+import { useQuery } from '@tanstack/react-query';
 
 enum EAcessTypes {
 	github = 'github',
@@ -32,12 +33,18 @@ interface ISignIn {
 	account: Account | null;
 }
 
-export default function SignIn({ account }: ISignIn) {
+interface UserAccount extends User {
+	accounts: Account[];
+	sessions: Session[];
+}
+
+export default function SignIn() {
 	const router = useRouter();
 	const session = useSession();
 
 	const [selectedTab, setSelectedTab] = useState('authentications');
 	const [acessType, setAcessType] = useState<EAcessTypes>(EAcessTypes.none);
+	const [account, setAccount] = useState<Account>();
 
 	const hasAuthError = !!router.query.error;
 	const isSigedIn = session.status === 'authenticated';
@@ -47,10 +54,7 @@ export default function SignIn({ account }: ISignIn) {
 	}
 
 	async function handlerAcessType(tab: string, type: EAcessTypes) {
-		const result = await signIn(acessType);
-		console.log('login result: ', result);
-
-		// const { data } = await api.get(`/users/${session.data?.user.username}/get-user`);
+		await signIn(acessType);
 
 		setSelectedTab(tab);
 		setAcessType(type);
@@ -58,7 +62,20 @@ export default function SignIn({ account }: ISignIn) {
 
 	useEffect(() => {
 		if (isSigedIn) {
-			router.push('/home');
+			api
+				.get<UserAccount>(`/users/${session.data?.user.id}/get-user-by-id`)
+				.then((result) => {
+					if (result.data.username) {
+						setAccount(result.data.accounts[0]);
+						return result.data;
+					}
+				})
+				.then(() => {
+					router.push('/home');
+				})
+				.catch((error) => {
+					throw new Error(error);
+				});
 		}
 	}, [session]);
 
@@ -103,7 +120,7 @@ export default function SignIn({ account }: ISignIn) {
 											)}
 										</LoginOptionBox>
 
-										<LoginOptionBox onClick={() => handlerAcessType('registerUser', EAcessTypes.github)}>
+										<LoginOptionBox onClick={() => handlerAcessType('registerUser', EAcessTypes.github)} disabled={isSigedIn}>
 											<Image src={githubIcon} quality={100} height={32} priority alt='Imagem do logo do github' />
 											{isSigedIn && account?.provider === 'github' ? (
 												<div className='connected'>
@@ -118,7 +135,7 @@ export default function SignIn({ account }: ISignIn) {
 											)}
 										</LoginOptionBox>
 
-										<LoginOptionBox onClick={() => loginAsGuest()}>
+										<LoginOptionBox onClick={() => loginAsGuest()} disabled={isSigedIn}>
 											<Image src={rocketLaunchIcon} quality={100} height={32} priority alt='Imagem do logo de um foguete' />
 											<div className='not-connected'>
 												<span>Entrar como visitante</span>

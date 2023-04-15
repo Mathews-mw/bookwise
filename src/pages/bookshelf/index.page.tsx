@@ -23,19 +23,24 @@ import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { BookCard } from './BookCard';
-import { Book, BookCategory } from '@prisma/client';
+import { Book, BookCategory, User } from '@prisma/client';
+import { SideBar } from './SideBar';
+import { useSession } from 'next-auth/react';
 
 interface IBooks extends Book {
 	bookCategory: BookCategory[];
 }
 
 interface IBookshelf {
+	user: User;
 	booksCurrentlyReading: IBooks[];
 	alreadyReadBooks: IBooks[];
 	wishReadBooks: IBooks[];
 }
 
-export default function Bookshelf({ booksCurrentlyReading, alreadyReadBooks, wishReadBooks }: IBookshelf) {
+export default function Bookshelf({ user, booksCurrentlyReading, alreadyReadBooks, wishReadBooks }: IBookshelf) {
+	const session = useSession();
+
 	return (
 		<BookShelfContainer>
 			<HeaderContainer>
@@ -90,7 +95,15 @@ export default function Bookshelf({ booksCurrentlyReading, alreadyReadBooks, wis
 			</GroupingBooksContainer>
 
 			<AnalyticsSidebarContainer>
-				<UserAnalytics />
+				{session.status === 'authenticated' && (
+					<SideBar
+						userSession={session.data.user}
+						user={user}
+						alreadyReadBooks={alreadyReadBooks}
+						booksCurrentlyReading={booksCurrentlyReading}
+						wishReadBooks={wishReadBooks}
+					/>
+				)}
 			</AnalyticsSidebarContainer>
 		</BookShelfContainer>
 	);
@@ -102,6 +115,12 @@ Bookshelf.getLayout = function getLayout(page: ReactElement) {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 	const session = await getServerSession(req, res, buildNextAuthOptions(req, res));
+
+	const user = await prisma.user.findUnique({
+		where: {
+			id: session?.user.id,
+		},
+	});
 
 	const booksCurrentlyReading = await prisma.book.findMany({
 		include: {
@@ -148,6 +167,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 	return {
 		props: {
 			session,
+			user: JSON.parse(JSON.stringify(user)),
 			booksCurrentlyReading,
 			wishReadBooks,
 			alreadyReadBooks,

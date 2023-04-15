@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession, signIn } from 'next-auth/react';
 
 import { theme } from '@/styles';
 import { NavLink } from './NavLink';
@@ -8,7 +8,7 @@ import { UserAvatar } from '../UserAvatar';
 import { BookshelfIcon } from '../CustomIcons/BookshelfIcon';
 
 import { Binoculars, ChartLineUp, Notebook, SignOut, User } from '@phosphor-icons/react';
-import { NavbarContainer, NavLinksContainer, UserContainer, LogoContainer } from './styles';
+import { NavbarContainer, NavLinksContainer, UserContainer, LogoContainer, SignoutBtn } from './styles';
 
 import Logo from '../../assets/Logo.png';
 
@@ -19,6 +19,10 @@ export function NavBar() {
 
 	function handleSetUrlPath() {
 		setUrlPath('');
+	}
+
+	async function handlerSingOut() {
+		signOut({ redirect: true, callbackUrl: '/' });
 	}
 
 	return (
@@ -70,7 +74,10 @@ export function NavBar() {
 				<UserContainer>
 					<UserAvatar userSession={session.data.user} />
 					<span>{session.data.user.username}</span>
-					<SignOut size={20} />
+
+					<SignoutBtn onClick={() => handlerSingOut()}>
+						<SignOut size={20} />
+					</SignoutBtn>
 				</UserContainer>
 			)}
 		</NavbarContainer>

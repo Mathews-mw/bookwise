@@ -1,5 +1,5 @@
 import lodash from 'lodash';
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { useSession } from 'next-auth/react';
 import { getServerSession } from 'next-auth';
@@ -35,6 +35,10 @@ interface IPerfilProps {
 export default function Perfil({ user, userBooks, ratingBooks, MostReadUniqueCategories, booksReviews }: IPerfilProps) {
 	const session = useSession();
 
+	const [filterSearch, setFilterSearch] = useState('');
+
+	const booksListFilter = booksReviews.filter((book) => book.book.title.toLowerCase().includes(filterSearch.toLowerCase()));
+
 	return (
 		<PerfilContainer>
 			<HeaderContainer>
@@ -45,9 +49,14 @@ export default function Perfil({ user, userBooks, ratingBooks, MostReadUniqueCat
 			</HeaderContainer>
 
 			<MyBookReviewsContainer>
-				<TextInput placeholder='Buscar livro avaliado' iconRight={<MagnifyingGlass size={20} />} />
+				<TextInput
+					placeholder='Buscar livro avaliado'
+					iconRight={<MagnifyingGlass size={20} />}
+					value={filterSearch}
+					onChange={(e) => setFilterSearch(e.target.value)}
+				/>
 				<ReviewsContainer>
-					{booksReviews.map((review) => {
+					{booksListFilter.map((review) => {
 						const userBookRating = ratingBooks.find((book) => {
 							return book.book_id === review.book_id;
 						});

@@ -20,6 +20,7 @@ import { Binoculars, MagnifyingGlass, MinusCircle, PlusCircle } from '@phosphor-
 import { ExploreContainer, HeaderContainer, CategoriesContainer, CategoryTag, BooksListContainer, ShowAllButton } from './styles';
 import { getServerSession } from 'next-auth';
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
+import { useRouter } from 'next/router';
 
 interface IExploreProps {
 	categories: Category[];

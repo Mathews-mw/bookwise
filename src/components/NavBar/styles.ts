@@ -59,3 +59,8 @@ export const LettersContainer = styled('div', {
 	fontSize: 10,
 	fontWeight: 700,
 });
+
+export const SignoutBtn = styled('button', {
+	all: 'unset',
+	cursor: 'pointer',
+});
