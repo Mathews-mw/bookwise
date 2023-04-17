@@ -41,7 +41,7 @@ export default function Home({ bookReviews, userLatestBookReview, top4MostPopula
 					<h3>Início</h3>
 				</Header>
 
-				{session.status === 'authenticated' && (
+				{session.status === 'authenticated' && userLatestBookReview && (
 					<>
 						<BreadcrumbTitleContainer>
 							<span>Sua última avaliação</span>
@@ -50,15 +50,15 @@ export default function Home({ bookReviews, userLatestBookReview, top4MostPopula
 							</NavButton>
 						</BreadcrumbTitleContainer>
 						<UserReviewCard
-							userName={userLatestBookReview.user.name}
-							publishedDate={userLatestBookReview.created_at}
-							updatedAt={userLatestBookReview.updated_at ?? undefined}
-							bookTitle={userLatestBookReview.book.title}
-							bookAuthor={userLatestBookReview.book.author}
-							bookCover={userLatestBookReview.book.cover_image!}
-							comment={userLatestBookReview.review}
-							rating={Number(userLatestBookReview.user.ratingBook.find((book) => book.book_id === userLatestBookReview.book_id)?.rating)}
-							user={userLatestBookReview.user}
+							userName={userLatestBookReview?.user.name}
+							publishedDate={userLatestBookReview?.created_at}
+							updatedAt={userLatestBookReview?.updated_at ?? undefined}
+							bookTitle={userLatestBookReview?.book.title}
+							bookAuthor={userLatestBookReview?.book.author}
+							bookCover={userLatestBookReview?.book.cover_image!}
+							comment={userLatestBookReview?.review}
+							rating={Number(userLatestBookReview?.user.ratingBook.find((book) => book.book_id === userLatestBookReview.book_id)?.rating)}
+							user={userLatestBookReview?.user}
 						/>
 					</>
 				)}
@@ -173,7 +173,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
 	return {
 		props: {
-			session,
+			session: JSON.parse(JSON.stringify(session)),
 			bookReviews: JSON.parse(JSON.stringify(bookReviews)),
 			userLatestBookReview: JSON.parse(JSON.stringify(userLatestBookReview)),
 			top4MostPopularBooks: JSON.parse(JSON.stringify(top4MostPopularBooks)),

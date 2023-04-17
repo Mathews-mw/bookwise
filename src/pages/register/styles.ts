@@ -20,6 +20,17 @@ export const BreadcrumbTitleContainer = styled('div', {
 	marginBottom: '1rem',
 });
 
+export const TextsContainer = styled('div', {
+	display: 'flex',
+	flexDirection: 'column',
+	gap: '0.35rem',
+	color: '$gray300',
+
+	lineHeight: 2,
+
+	marginBottom: '2rem',
+});
+
 export const Form = styled('form', {
 	display: 'flex',
 	flexDirection: 'column',

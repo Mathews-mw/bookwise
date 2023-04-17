@@ -21,7 +21,7 @@ import { ShowErrorRequest } from '@/utils/ShowErrorRequest';
 import { ShowSuccessRequest } from '@/utils/ShowSuccessRequest';
 
 import { Notebook, UploadSimple } from '@phosphor-icons/react';
-import { RegisterCard, RegisterContainer, BreadcrumbTitleContainer, Form, InputsGroup, UploadContainer, SubmitButtonContainer } from './styles';
+import { RegisterCard, RegisterContainer, BreadcrumbTitleContainer, Form, InputsGroup, UploadContainer, SubmitButtonContainer, TextsContainer } from './styles';
 
 interface IRegisterProps {
 	categories: Category[];
@@ -145,9 +145,25 @@ export default function Register({ categories }: IRegisterProps) {
 				<h3>Cadastrar</h3>
 			</Header>
 
-			<BreadcrumbTitleContainer>
-				<span>Cadastrar um novo livro</span>
-			</BreadcrumbTitleContainer>
+			<TextsContainer>
+				<p>
+					Caso você queira contribuir com a plataforma, é possível cadastrar um novo livro. O livro que você cadastrar ficará disponível na seção{' '}
+					<i>
+						<strong>explorar</strong>
+					</i>
+					, assim, todos poderão comentá-lo e avaliá-lo.
+				</p>
+
+				<p>
+					Para cadastrar um novo livro, é necessário preencher o pequeno formulário logo abaixo. Todos os campos são obrigatórios, inclusive o de inserir uma
+					imagem como capa para o livro. Certifique-se de escolher uma boa imagem para servir como capa do livro.
+				</p>
+
+				<p>
+					Por favor, não use esse espaço para violar as políticas da plataforma, insira apenas livros de conteúdo que estão de acordo e respeitem os termos da
+					plataforma.
+				</p>
+			</TextsContainer>
 
 			<RegisterCard>
 				<Form onSubmit={handleSubmit(handleRegisterBook)}>

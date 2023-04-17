@@ -1,5 +1,4 @@
 import { Adapter } from 'next-auth/adapters';
-import { parseCookies, destroyCookie } from 'nookies';
 import { NextApiRequest, NextApiResponse, NextPageContext } from 'next';
 
 import { prisma } from '../prisma';
@@ -7,35 +6,22 @@ import { prisma } from '../prisma';
 export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res: NextApiResponse | NextPageContext['res']): Adapter {
 	return {
 		async createUser(user) {
-			console.log('createUser: ', user);
-			const { '@bookwise:userId': userIdOnCookies } = parseCookies({ req });
-
-			if (!userIdOnCookies) {
-				throw new Error('User ID not found on cookies');
-			}
-
-			const prismaUser = await prisma.user.update({
-				where: {
-					id: userIdOnCookies,
-				},
+			const prismaUser = await prisma.user.create({
 				data: {
 					name: user.name,
 					email: user.email,
 					avatar_url: user.avatar_url,
+					created_at: user.created_at,
 				},
-			});
-
-			destroyCookie({ res }, '@bookwise:userId', {
-				path: '/',
 			});
 
 			return {
 				id: prismaUser.id,
 				name: prismaUser.name,
-				username: prismaUser.username,
 				email: prismaUser.email!,
 				emailVerified: null,
 				avatar_url: prismaUser.avatar_url!,
+				created_at: prismaUser.created_at,
 			};
 		},
 
@@ -53,10 +39,10 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
 			return {
 				id: user.id,
 				name: user.name,
-				username: user.username,
 				email: user.email!,
 				emailVerified: null,
 				avatar_url: user.avatar_url!,
+				created_at: user.created_at,
 			};
 		},
 
@@ -74,10 +60,10 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
 			return {
 				id: user.id,
 				name: user.name,
-				username: user.username,
 				email: user.email!,
 				emailVerified: null,
 				avatar_url: user.avatar_url!,
+				created_at: user.created_at,
 			};
 		},
 
@@ -103,10 +89,10 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
 			return {
 				id: user.id,
 				name: user.name,
-				username: user.username,
 				email: user.email!,
 				emailVerified: null,
 				avatar_url: user.avatar_url!,
+				created_at: user.created_at,
 			};
 		},
 
@@ -125,10 +111,10 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
 			return {
 				id: prismaUser.id,
 				name: prismaUser.name,
-				username: prismaUser.username,
 				email: prismaUser.email!,
 				emailVerified: null,
 				avatar_url: prismaUser.avatar_url!,
+				created_at: prismaUser.created_at,
 			};
 		},
 
@@ -172,7 +158,6 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
 		},
 
 		async createSession({ sessionToken, userId, expires }) {
-			console.log('createSession: ', sessionToken, userId, expires);
 			await prisma.session.create({
 				data: {
 					user_id: userId,
@@ -213,10 +198,10 @@ export function PrismaAdapter(req: NextApiRequest | NextPageContext['req'], res:
 				user: {
 					id: user.id,
 					name: user.name,
-					username: user.username,
 					email: user.email!,
 					emailVerified: null,
 					avatar_url: user.avatar_url!,
+					created_at: user.created_at,
 				},
 			};
 		},

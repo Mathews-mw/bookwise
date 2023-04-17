@@ -12,6 +12,8 @@ export const HeaderContainer = styled('div', {
 	justifyContent: 'space-between',
 	width: '100%',
 
+	padding: '40px 0 0 0',
+
 	'.inputContainer': {
 		maxWidth: 433,
 		width: '100%',

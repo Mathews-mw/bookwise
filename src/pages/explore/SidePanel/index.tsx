@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { theme } from '@/styles';
 import { api } from '@/lib/axios';
+import { LoginAlert } from './LoginAlert';
 import { UserPostComment } from './UserPostComment';
 import { UserAvatar } from '@/components/UserAvatar';
 import { ContextMenu } from '@/components/ContextMenu';
@@ -37,7 +38,6 @@ import {
 } from './styles';
 
 import emptyImg from '../../../assets/free-time.png';
-import { LoginAlert } from './LoginAlert';
 
 interface IBookCategory extends BookCategory {
 	category: Category;

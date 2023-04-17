@@ -186,7 +186,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 	return {
 		props: {
 			categories,
-			session,
+			session: JSON.parse(JSON.stringify(session)),
 		},
 	};
 };

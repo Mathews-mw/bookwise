@@ -4,7 +4,7 @@ export const NavbarContainer = styled('div', {
 	display: 'flex',
 	flexDirection: 'column',
 	justifyContent: 'space-between',
-	padding: '2.8rem',
+	padding: '2rem',
 	height: '100%',
 });
 
@@ -20,12 +20,39 @@ export const NavLinksContainer = styled('div', {
 
 export const UserContainer = styled('div', {
 	display: 'flex',
+	flexDirection: 'column',
 	alignItems: 'center',
 	justifyContent: 'space-between',
 	fontSize: 14,
 
 	svg: {
 		color: '$dangerLight',
+	},
+
+	'.user-infos': {
+		display: 'flex',
+		alignItems: 'center',
+		gap: '0.5rem',
+	},
+});
+
+export const LoginContainer = styled('button', {
+	all: 'unset',
+
+	display: 'flex',
+	alignItems: 'center',
+	gap: '0.75rem',
+
+	fontWeight: '$bold',
+	color: '$gray300',
+	cursor: 'pointer',
+
+	svg: {
+		color: '$green100',
+	},
+
+	'&:hover': {
+		color: '$gray100',
 	},
 });
 
@@ -62,5 +89,29 @@ export const LettersContainer = styled('div', {
 
 export const SignoutBtn = styled('button', {
 	all: 'unset',
+	display: 'flex',
+	gap: '0.5rem',
+
+	color: '$gray400',
 	cursor: 'pointer',
+
+	'&:hover': {
+		color: '$gray200',
+	},
+});
+
+export const SignoutModalContainer = styled('div', {
+	display: 'flex',
+	flexDirection: 'column',
+	padding: '2rem',
+	gap: '1rem',
+
+	h3: {
+		color: '$gray300',
+	},
+
+	'.btn-group': {
+		display: 'flex',
+		justifyContent: 'end',
+	},
 });
