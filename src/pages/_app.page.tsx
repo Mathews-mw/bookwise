@@ -5,6 +5,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 import { NextPage } from 'next';
 import ReactModal from 'react-modal';
+import { DefaultSeo } from 'next-seo';
 import type { AppProps } from 'next/app';
 import { Nunito } from 'next/font/google';
 import { queryClient } from '@/lib/react-query';
@@ -35,6 +36,14 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
 	return (
 		<div className={nunito.className}>
 			<QueryClientProvider client={queryClient}>
+				<DefaultSeo
+					openGraph={{
+						type: 'website',
+						locale: 'pt_BR',
+						url: 'https://bookwise.com.br',
+						siteName: 'Book Wise',
+					}}
+				/>
 				<SkeletonTheme baseColor='#252D4A' highlightColor='#8D95AF'>
 					<SessionProvider session={session}>{getLayout(<Component {...pageProps} />)}</SessionProvider>
 				</SkeletonTheme>

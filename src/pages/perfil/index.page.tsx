@@ -1,8 +1,9 @@
 import lodash from 'lodash';
-import { ReactElement, useState } from 'react';
+import { NextSeo } from 'next-seo';
 import { GetServerSideProps } from 'next';
 import { useSession } from 'next-auth/react';
 import { getServerSession } from 'next-auth';
+import { ReactElement, useState } from 'react';
 
 import { prisma } from '@/lib/prisma';
 import { Header } from '@/components/Header';
@@ -40,54 +41,58 @@ export default function Perfil({ user, userBooks, ratingBooks, MostReadUniqueCat
 	const booksListFilter = booksReviews.filter((book) => book.book.title.toLowerCase().includes(filterSearch.toLowerCase()));
 
 	return (
-		<PerfilContainer>
-			<HeaderContainer>
-				<Header>
-					<User size={32} />
-					<h3>Perfil</h3>
-				</Header>
-			</HeaderContainer>
+		<>
+			<NextSeo title='Perfil | BookWise' noindex />
 
-			<MyBookReviewsContainer>
-				<TextInput
-					placeholder='Buscar livro avaliado'
-					iconRight={<MagnifyingGlass size={20} />}
-					value={filterSearch}
-					onChange={(e) => setFilterSearch(e.target.value)}
-				/>
-				<ReviewsContainer>
-					{booksListFilter.map((review) => {
-						const userBookRating = ratingBooks.find((book) => {
-							return book.book_id === review.book_id;
-						});
-						return (
-							<MyBookReviewCard
-								key={review.id}
-								bookTitle={review.book.title}
-								bookAuthor={review.book.author}
-								bookCover={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${review.book.cover_image!}`}
-								userBookRating={Number(userBookRating?.rating)}
-								puplishedAt={review.created_at}
-								updatedAt={review.updated_at ?? undefined}
-								userOpinion={review.review}
-							/>
-						);
-					})}
-				</ReviewsContainer>
-			</MyBookReviewsContainer>
+			<PerfilContainer>
+				<HeaderContainer>
+					<Header>
+						<User size={32} />
+						<h3>Perfil</h3>
+					</Header>
+				</HeaderContainer>
 
-			<AnalyticsSidebarContainer>
-				{session.status === 'authenticated' && (
-					<UserAnalytics
-						user={user}
-						userSession={session.data.user}
-						userBooks={userBooks}
-						ratingBooks={ratingBooks}
-						mostReadCategories={MostReadUniqueCategories}
+				<MyBookReviewsContainer>
+					<TextInput
+						placeholder='Buscar livro avaliado'
+						iconRight={<MagnifyingGlass size={20} />}
+						value={filterSearch}
+						onChange={(e) => setFilterSearch(e.target.value)}
 					/>
-				)}
-			</AnalyticsSidebarContainer>
-		</PerfilContainer>
+					<ReviewsContainer>
+						{booksListFilter.map((review) => {
+							const userBookRating = ratingBooks.find((book) => {
+								return book.book_id === review.book_id;
+							});
+							return (
+								<MyBookReviewCard
+									key={review.id}
+									bookTitle={review.book.title}
+									bookAuthor={review.book.author}
+									bookCover={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${review.book.cover_image!}`}
+									userBookRating={Number(userBookRating?.rating)}
+									puplishedAt={review.created_at}
+									updatedAt={review.updated_at ?? undefined}
+									userOpinion={review.review}
+								/>
+							);
+						})}
+					</ReviewsContainer>
+				</MyBookReviewsContainer>
+
+				<AnalyticsSidebarContainer>
+					{session.status === 'authenticated' && (
+						<UserAnalytics
+							user={user}
+							userSession={session.data.user}
+							userBooks={userBooks}
+							ratingBooks={ratingBooks}
+							mostReadCategories={MostReadUniqueCategories}
+						/>
+					)}
+				</AnalyticsSidebarContainer>
+			</PerfilContainer>
+		</>
 	);
 }
 

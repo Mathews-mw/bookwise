@@ -1,7 +1,7 @@
 import Image from 'next/image';
-import { ImageFrame, LettersContainer } from './styles';
-import { useEffect, useState } from 'react';
 import { User } from '@prisma/client';
+import { useEffect, useState } from 'react';
+import { ImageFrame, LettersContainer } from './styles';
 
 interface IUserAvatarProps {
 	userSession: User;

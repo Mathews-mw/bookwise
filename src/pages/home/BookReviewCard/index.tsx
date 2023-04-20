@@ -5,7 +5,6 @@ import * as Collapsible from '@radix-ui/react-collapsible';
 
 import { User } from '@prisma/client';
 import { UserAvatar } from '@/components/UserAvatar';
-import { StarsRating } from '@/components/Rating/StarsRating';
 
 import { styled } from '@/styles';
 import {

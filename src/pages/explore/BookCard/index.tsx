@@ -1,12 +1,12 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
+import { theme } from '@/styles';
 import { ratingCalculate } from '@/utils/rating-calculate';
-import { Book, BookCategory, RatingBook, UserBook } from '@prisma/client';
 import { StarsRatingView } from '@/components/Rating/StarsRatingView';
+import { Book, BookCategory, RatingBook, UserBook } from '@prisma/client';
 
 import { BookCardContainer, BookInfos, BookStatusContainer } from './styles';
-import { theme } from '@/styles';
 
 interface IBookCardProps {
 	book: Book & {

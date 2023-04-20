@@ -1,11 +1,11 @@
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 import LogoGit from '../../../../assets/icons_github.svg';
 import LogoGoogle from '../../../../assets/logos_google-icon.svg';
 
 import { X } from '@phosphor-icons/react';
 import { Container, CloseBtnContainer, Title, OptionsLoginContainer, OptionLogin } from './styles';
-import { useRouter } from 'next/router';
 
 interface ILoginAlertProps {
 	closeModal: () => void;

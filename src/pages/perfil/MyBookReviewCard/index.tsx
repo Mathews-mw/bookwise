@@ -1,9 +1,9 @@
+import dayjs from 'dayjs';
 import Image, { StaticImageData } from 'next/image';
 
 import { StarsRatingView } from '@/components/Rating/StarsRatingView';
 
 import { BookInfos, CardContainer, Container, HeaderCardContainer, OpinionCardContainer } from './styles';
-import dayjs from 'dayjs';
 
 interface IMyBookReviewCardProps {
 	bookTitle: string;

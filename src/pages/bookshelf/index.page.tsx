@@ -1,7 +1,18 @@
+import { NextSeo } from 'next-seo';
 import { ReactElement } from 'react';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
+import { useSession } from 'next-auth/react';
 
+import { theme } from '@/styles';
+import { SideBar } from './SideBar';
+import { BookCard } from './BookCard';
+import { prisma } from '@/lib/prisma';
 import { Header } from '@/components/Header';
 import DefaultLayout from '@/layouts/Default';
+import { Book, BookCategory, User } from '@prisma/client';
+import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
+import { BookshelfIcon } from '@/components/CustomIcons/BookshelfIcon';
 
 import {
 	BookShelfContainer,
@@ -14,18 +25,6 @@ import {
 	WishReadBookContainer,
 	AnalyticsSidebarContainer,
 } from './styles';
-
-import { UserAnalytics } from '../perfil/UserAnalytics';
-import { BookshelfIcon } from '@/components/CustomIcons/BookshelfIcon';
-import { theme } from '@/styles';
-import { GetServerSideProps } from 'next';
-import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
-import { prisma } from '@/lib/prisma';
-import { getServerSession } from 'next-auth';
-import { BookCard } from './BookCard';
-import { Book, BookCategory, User } from '@prisma/client';
-import { SideBar } from './SideBar';
-import { useSession } from 'next-auth/react';
 
 interface IBooks extends Book {
 	bookCategory: BookCategory[];
@@ -42,70 +41,74 @@ export default function Bookshelf({ user, booksCurrentlyReading, alreadyReadBook
 	const session = useSession();
 
 	return (
-		<BookShelfContainer>
-			<HeaderContainer>
-				<Header>
-					<BookshelfIcon size={32} color={`${theme.colors.green100}`} />
-					<h3>Estante Pessoal</h3>
-				</Header>
-			</HeaderContainer>
+		<>
+			<NextSeo title='Estante | BookWise' noindex />
 
-			<GroupingBooksContainer>
-				<CurrentlyReadingContainer>
-					<BreadcrumbTitleContainer>
-						<span>
-							Livros que você <strong style={{ color: `${theme.colors.yellow200}` }}> está lendo </strong>
-						</span>
-					</BreadcrumbTitleContainer>
+			<BookShelfContainer>
+				<HeaderContainer>
+					<Header>
+						<BookshelfIcon size={32} color={`${theme.colors.green100}`} />
+						<h3>Estante Pessoal</h3>
+					</Header>
+				</HeaderContainer>
 
-					<BooksListContainer>
-						{booksCurrentlyReading.map((book) => {
-							return <BookCard key={book.id} book={book} onSelectBook={() => console.log('')} />;
-						})}
-					</BooksListContainer>
-				</CurrentlyReadingContainer>
+				<GroupingBooksContainer>
+					<CurrentlyReadingContainer>
+						<BreadcrumbTitleContainer>
+							<span>
+								Livros que você <strong style={{ color: `${theme.colors.yellow200}` }}> está lendo </strong>
+							</span>
+						</BreadcrumbTitleContainer>
 
-				<WishReadBookContainer>
-					<BreadcrumbTitleContainer>
-						<span>
-							Livros que você <strong style={{ color: `${theme.colors.blue200}` }}> gostaria de ler </strong>
-						</span>
-					</BreadcrumbTitleContainer>
+						<BooksListContainer>
+							{booksCurrentlyReading.map((book) => {
+								return <BookCard key={book.id} book={book} onSelectBook={() => console.log('')} />;
+							})}
+						</BooksListContainer>
+					</CurrentlyReadingContainer>
 
-					<BooksListContainer>
-						{wishReadBooks.map((book) => {
-							return <BookCard key={book.id} book={book} onSelectBook={() => console.log('')} />;
-						})}
-					</BooksListContainer>
-				</WishReadBookContainer>
+					<WishReadBookContainer>
+						<BreadcrumbTitleContainer>
+							<span>
+								Livros que você <strong style={{ color: `${theme.colors.blue200}` }}> gostaria de ler </strong>
+							</span>
+						</BreadcrumbTitleContainer>
 
-				<ReadedBooksContainer>
-					<BreadcrumbTitleContainer>
-						<span>
-							Livros que você <strong style={{ color: `${theme.colors.green200}` }}> já leu </strong>
-						</span>
-					</BreadcrumbTitleContainer>
+						<BooksListContainer>
+							{wishReadBooks.map((book) => {
+								return <BookCard key={book.id} book={book} onSelectBook={() => console.log('')} />;
+							})}
+						</BooksListContainer>
+					</WishReadBookContainer>
 
-					<BooksListContainer>
-						{alreadyReadBooks.map((book) => {
-							return <BookCard key={book.id} book={book} onSelectBook={() => console.log('')} />;
-						})}
-					</BooksListContainer>
-				</ReadedBooksContainer>
-			</GroupingBooksContainer>
+					<ReadedBooksContainer>
+						<BreadcrumbTitleContainer>
+							<span>
+								Livros que você <strong style={{ color: `${theme.colors.green200}` }}> já leu </strong>
+							</span>
+						</BreadcrumbTitleContainer>
 
-			<AnalyticsSidebarContainer>
-				{session.status === 'authenticated' && (
-					<SideBar
-						userSession={session.data.user}
-						user={user}
-						alreadyReadBooks={alreadyReadBooks}
-						booksCurrentlyReading={booksCurrentlyReading}
-						wishReadBooks={wishReadBooks}
-					/>
-				)}
-			</AnalyticsSidebarContainer>
-		</BookShelfContainer>
+						<BooksListContainer>
+							{alreadyReadBooks.map((book) => {
+								return <BookCard key={book.id} book={book} onSelectBook={() => console.log('')} />;
+							})}
+						</BooksListContainer>
+					</ReadedBooksContainer>
+				</GroupingBooksContainer>
+
+				<AnalyticsSidebarContainer>
+					{session.status === 'authenticated' && (
+						<SideBar
+							userSession={session.data.user}
+							user={user}
+							alreadyReadBooks={alreadyReadBooks}
+							booksCurrentlyReading={booksCurrentlyReading}
+							wishReadBooks={wishReadBooks}
+						/>
+					)}
+				</AnalyticsSidebarContainer>
+			</BookShelfContainer>
+		</>
 	);
 }
 

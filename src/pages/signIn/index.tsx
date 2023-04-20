@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { NextSeo } from 'next-seo';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import { useEffect, useState } from 'react';
@@ -67,62 +68,66 @@ export default function SignIn() {
 	}, [session]);
 
 	return (
-		<HomeContainer>
-			<Preview>
-				<Image src={appCover} quality={100} priority alt='Imagem de uma pessoa lendo um livro. Capa da Home' />
-			</Preview>
+		<>
+			<NextSeo title='Acessar BookWise' noindex />
 
-			<LoginContainer>
-				<LoginGroup>
-					<div className='header'>
-						<h3>Boas vindas!</h3>
-						<p>Faça seu login ou acesse como visitante</p>
-					</div>
+			<HomeContainer>
+				<Preview>
+					<Image src={appCover} quality={100} priority alt='Imagem de uma pessoa lendo um livro. Capa da Home' />
+				</Preview>
 
-					<LoginBox>
-						<LoginOptionBox onClick={() => handlerAcessType(EAcessTypes.google)} disabled={isSigedIn}>
-							<Image src={googleIcon} quality={100} height={32} priority alt='Imagem do logo da google' />
-							{isSigedIn && account?.provider === 'google' ? (
-								<div className='connected'>
-									<span>Conectado com Google</span>
-									<Check size={22} />
-								</div>
-							) : (
+				<LoginContainer>
+					<LoginGroup>
+						<div className='header'>
+							<h3>Boas vindas!</h3>
+							<p>Faça seu login ou acesse como visitante</p>
+						</div>
+
+						<LoginBox>
+							<LoginOptionBox onClick={() => handlerAcessType(EAcessTypes.google)} disabled={isSigedIn}>
+								<Image src={googleIcon} quality={100} height={32} priority alt='Imagem do logo da google' />
+								{isSigedIn && account?.provider === 'google' ? (
+									<div className='connected'>
+										<span>Conectado com Google</span>
+										<Check size={22} />
+									</div>
+								) : (
+									<div className='not-connected'>
+										<span>Entrar com Google</span>
+										<ArrowCircleRight size={22} />
+									</div>
+								)}
+							</LoginOptionBox>
+
+							<LoginOptionBox onClick={() => handlerAcessType(EAcessTypes.github)} disabled={isSigedIn}>
+								<Image src={githubIcon} quality={100} height={32} priority alt='Imagem do logo do github' />
+								{isSigedIn && account?.provider === 'github' ? (
+									<div className='connected'>
+										<span>Conectado com Github</span>
+										<Check size={22} />
+									</div>
+								) : (
+									<div className='not-connected'>
+										<span>Entrar com Github</span>
+										<ArrowCircleRight size={22} />
+									</div>
+								)}
+							</LoginOptionBox>
+
+							<LoginOptionBox onClick={() => loginAsGuest()} disabled={isSigedIn}>
+								<Image src={rocketLaunchIcon} quality={100} height={32} priority alt='Imagem do logo de um foguete' />
 								<div className='not-connected'>
-									<span>Entrar com Google</span>
+									<span>Entrar como visitante</span>
 									<ArrowCircleRight size={22} />
 								</div>
-							)}
-						</LoginOptionBox>
+							</LoginOptionBox>
+						</LoginBox>
 
-						<LoginOptionBox onClick={() => handlerAcessType(EAcessTypes.github)} disabled={isSigedIn}>
-							<Image src={githubIcon} quality={100} height={32} priority alt='Imagem do logo do github' />
-							{isSigedIn && account?.provider === 'github' ? (
-								<div className='connected'>
-									<span>Conectado com Github</span>
-									<Check size={22} />
-								</div>
-							) : (
-								<div className='not-connected'>
-									<span>Entrar com Github</span>
-									<ArrowCircleRight size={22} />
-								</div>
-							)}
-						</LoginOptionBox>
-
-						<LoginOptionBox onClick={() => loginAsGuest()} disabled={isSigedIn}>
-							<Image src={rocketLaunchIcon} quality={100} height={32} priority alt='Imagem do logo de um foguete' />
-							<div className='not-connected'>
-								<span>Entrar como visitante</span>
-								<ArrowCircleRight size={22} />
-							</div>
-						</LoginOptionBox>
-					</LoginBox>
-
-					{hasAuthError && <ErrorMessage>Falha ao se conectar ao Google, verifique se você habilitou as permissões de acesso</ErrorMessage>}
-				</LoginGroup>
-			</LoginContainer>
-		</HomeContainer>
+						{hasAuthError && <ErrorMessage>Falha ao se conectar ao Google, verifique se você habilitou as permissões de acesso</ErrorMessage>}
+					</LoginGroup>
+				</LoginContainer>
+			</HomeContainer>
+		</>
 	);
 }
 

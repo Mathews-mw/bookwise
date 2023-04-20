@@ -3,22 +3,11 @@ import { useState } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import * as Collapsible from '@radix-ui/react-collapsible';
 
-import { User } from '@prisma/client';
-import { UserAvatar } from '@/components/UserAvatar';
-import { StarsRating } from '@/components/Rating/StarsRating';
-
 import { styled } from '@/styles';
-import {
-	BookInfos,
-	BookReviewContainer,
-	HeaderReview,
-	ReviewContainer,
-	CommentContainer,
-	CollapsibleContent,
-	CollapsibleTrigger,
-	CollapsibleButton,
-} from './styles';
+import { User } from '@prisma/client';
 import { StarsRatingView } from '@/components/Rating/StarsRatingView';
+
+import { BookInfos, BookReviewContainer, HeaderReview, ReviewContainer, CommentContainer } from './styles';
 
 interface IBookReviewCardProps {
 	userName: string;
@@ -32,7 +21,7 @@ interface IBookReviewCardProps {
 	user: User;
 }
 
-export function UserReviewCard({ userName, user, publishedDate, updatedAt, bookTitle, bookAuthor, bookCover, comment, rating }: IBookReviewCardProps) {
+export function UserReviewCard({ publishedDate, updatedAt, bookTitle, bookAuthor, bookCover, comment, rating }: IBookReviewCardProps) {
 	const [open, setOpen] = useState(false);
 
 	let published_date = dayjs(publishedDate);
@@ -47,8 +36,6 @@ export function UserReviewCard({ userName, user, publishedDate, updatedAt, bookT
 	const CollapsibleRoot = styled(Collapsible.Root, {
 		width: 300,
 	});
-
-	console.log('rating: ', rating);
 
 	return (
 		<BookReviewContainer>

@@ -1,22 +1,22 @@
+import { NextSeo } from 'next-seo';
 import { ReactElement } from 'react';
+import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth';
+import { useSession } from 'next-auth/react';
 
 import { prisma } from '@/lib/prisma';
-import { ratingCalculate } from '../../utils/rating-calculate';
 import { Header } from '@/components/Header';
 import DefaultLayout from '@/layouts/Default';
 import { TrendingBooks } from './TredingBooks';
 import { BookReviewCard } from './BookReviewCard';
+import { UserReviewCard } from './UserReviewCard';
+import { ratingCalculate } from '../../utils/rating-calculate';
 import { Book, BookReview, RatingBook, User } from '@prisma/client';
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
 
 import { CaretRight, ChartLineUp } from '@phosphor-icons/react';
 import { HomeContainer, BreadcrumbTitleContainer, RecentViewsContainer, ReviewsContainer, TrendingContainer, TrandingBooksList, NavButton } from './styles';
-
-import { UserReviewCard } from './UserReviewCard';
-import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
 
 interface IBookReviews extends BookReview {
 	book: Book;
@@ -34,76 +34,80 @@ export default function Home({ bookReviews, userLatestBookReview, top4MostPopula
 	const router = useRouter();
 
 	return (
-		<HomeContainer>
-			<RecentViewsContainer>
-				<Header css={{ padding: '40px 0' }}>
-					<ChartLineUp size={32} />
-					<h3>Início</h3>
-				</Header>
+		<>
+			<NextSeo title='Bem-vindo ao BookWise' description='Um espaço para leitores que querem descobrir novos livros e trocar suas experiências literarias.' />
 
-				{session.status === 'authenticated' && userLatestBookReview && (
-					<>
-						<BreadcrumbTitleContainer>
-							<span>Sua última avaliação</span>
-							<NavButton onClick={() => router.push('/perfil')}>
-								Ver todos <CaretRight size={16} weight='bold' />
-							</NavButton>
-						</BreadcrumbTitleContainer>
-						<UserReviewCard
-							userName={userLatestBookReview?.user.name}
-							publishedDate={userLatestBookReview?.created_at}
-							updatedAt={userLatestBookReview?.updated_at ?? undefined}
-							bookTitle={userLatestBookReview?.book.title}
-							bookAuthor={userLatestBookReview?.book.author}
-							bookCover={userLatestBookReview?.book.cover_image!}
-							comment={userLatestBookReview?.review}
-							rating={Number(userLatestBookReview?.user.ratingBook.find((book) => book.book_id === userLatestBookReview.book_id)?.rating)}
-							user={userLatestBookReview?.user}
-						/>
-					</>
-				)}
+			<HomeContainer>
+				<RecentViewsContainer>
+					<Header css={{ padding: '40px 0' }}>
+						<ChartLineUp size={32} />
+						<h3>Início</h3>
+					</Header>
 
-				<BreadcrumbTitleContainer>
-					<span>Avaliações mais recentes</span>
-				</BreadcrumbTitleContainer>
-
-				<ReviewsContainer>
-					{bookReviews.map((review) => {
-						const userBookRating = review.user.ratingBook.find((rating) => rating.book_id === review.book_id);
-
-						return (
-							<BookReviewCard
-								key={review.id}
-								userName={review.user.name}
-								publishedDate={review.created_at}
-								updatedAt={review.updated_at ?? undefined}
-								bookTitle={review.book.title}
-								bookAuthor={review.book.author}
-								bookCover={review.book.cover_image!}
-								comment={review.review}
-								rating={Number(userBookRating?.rating)}
-								user={review.user}
+					{session.status === 'authenticated' && userLatestBookReview && (
+						<>
+							<BreadcrumbTitleContainer>
+								<span>Sua última avaliação</span>
+								<NavButton onClick={() => router.push('/perfil')}>
+									Ver todos <CaretRight size={16} weight='bold' />
+								</NavButton>
+							</BreadcrumbTitleContainer>
+							<UserReviewCard
+								userName={userLatestBookReview?.user.name}
+								publishedDate={userLatestBookReview?.created_at}
+								updatedAt={userLatestBookReview?.updated_at ?? undefined}
+								bookTitle={userLatestBookReview?.book.title}
+								bookAuthor={userLatestBookReview?.book.author}
+								bookCover={userLatestBookReview?.book.cover_image!}
+								comment={userLatestBookReview?.review}
+								rating={Number(userLatestBookReview?.user.ratingBook.find((book) => book.book_id === userLatestBookReview.book_id)?.rating)}
+								user={userLatestBookReview?.user}
 							/>
-						);
-					})}
-				</ReviewsContainer>
-			</RecentViewsContainer>
+						</>
+					)}
 
-			<TrendingContainer>
-				<BreadcrumbTitleContainer>
-					<span>Livros populares</span>
-					<NavButton onClick={() => router.push('/explore')}>
-						Ver todos <CaretRight size={16} weight='bold' />
-					</NavButton>
-				</BreadcrumbTitleContainer>
+					<BreadcrumbTitleContainer>
+						<span>Avaliações mais recentes</span>
+					</BreadcrumbTitleContainer>
 
-				<TrandingBooksList>
-					{top4MostPopularBooks.map((book) => {
-						return <TrendingBooks key={book.id} bookTitle={book.title} bookAuthor={book.author} bookCover={book.cover_image!} rating={book.average} />;
-					})}
-				</TrandingBooksList>
-			</TrendingContainer>
-		</HomeContainer>
+					<ReviewsContainer>
+						{bookReviews.map((review) => {
+							const userBookRating = review.user.ratingBook.find((rating) => rating.book_id === review.book_id);
+
+							return (
+								<BookReviewCard
+									key={review.id}
+									userName={review.user.name}
+									publishedDate={review.created_at}
+									updatedAt={review.updated_at ?? undefined}
+									bookTitle={review.book.title}
+									bookAuthor={review.book.author}
+									bookCover={review.book.cover_image!}
+									comment={review.review}
+									rating={Number(userBookRating?.rating)}
+									user={review.user}
+								/>
+							);
+						})}
+					</ReviewsContainer>
+				</RecentViewsContainer>
+
+				<TrendingContainer>
+					<BreadcrumbTitleContainer>
+						<span>Livros populares</span>
+						<NavButton onClick={() => router.push('/explore')}>
+							Ver todos <CaretRight size={16} weight='bold' />
+						</NavButton>
+					</BreadcrumbTitleContainer>
+
+					<TrandingBooksList>
+						{top4MostPopularBooks.map((book) => {
+							return <TrendingBooks key={book.id} bookTitle={book.title} bookAuthor={book.author} bookCover={book.cover_image!} rating={book.average} />;
+						})}
+					</TrandingBooksList>
+				</TrendingContainer>
+			</HomeContainer>
+		</>
 	);
 }
 

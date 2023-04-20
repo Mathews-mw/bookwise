@@ -1,6 +1,6 @@
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import { PrismaAdapter } from '@/lib/nextAuth/prisma-adapter';
 import { NextApiRequest, NextApiResponse, NextPageContext } from 'next';
-import NextAuth, { NextAuthOptions } from 'next-auth';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 import GitHubProvider, { GithubProfile } from 'next-auth/providers/github';
 
@@ -24,9 +24,9 @@ export function buildNextAuthOptions(req: NextApiRequest | NextPageContext['req'
 					return {
 						id: profile.sub,
 						name: profile.name,
-						username: '',
 						email: profile.email,
 						avatar_url: profile.picture,
+						created_at: new Date(),
 					};
 				},
 			}),
@@ -38,9 +38,9 @@ export function buildNextAuthOptions(req: NextApiRequest | NextPageContext['req'
 					return {
 						id: profile.id.toString(),
 						name: profile.name ?? '',
-						username: '',
 						email: profile.email ?? '',
 						avatar_url: profile.avatar_url,
+						created_at: new Date(),
 					};
 				},
 			}),
@@ -48,9 +48,9 @@ export function buildNextAuthOptions(req: NextApiRequest | NextPageContext['req'
 
 		callbacks: {
 			async signIn({ account }) {
-				// if (account?.provider === 'github' && !account?.scope?.includes('read:user,user:email')) {
-				// 	return 'http://localhost:3000?error=githubPermissions';
-				// }
+				if (account?.provider === 'github' && !account?.scope?.includes('read:user,user:email')) {
+					return 'http://localhost:3000?error=githubPermissions';
+				}
 				if (account?.provider === 'google' && !account?.scope?.includes('https://www.googleapis.com/auth/userinfo.email')) {
 					return 'http://localhost:3000?error=googlePermissions';
 				}

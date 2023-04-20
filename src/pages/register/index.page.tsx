@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import Image from 'next/image';
+import { NextSeo } from 'next-seo';
 import { GetStaticProps } from 'next';
 import { motion } from 'framer-motion';
-import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, Controller } from 'react-hook-form';
 import { ReactElement, useEffect, useState } from 'react';
 
 import { api } from '@/lib/axios';
@@ -21,7 +22,7 @@ import { ShowErrorRequest } from '@/utils/ShowErrorRequest';
 import { ShowSuccessRequest } from '@/utils/ShowSuccessRequest';
 
 import { Notebook, UploadSimple } from '@phosphor-icons/react';
-import { RegisterCard, RegisterContainer, BreadcrumbTitleContainer, Form, InputsGroup, UploadContainer, SubmitButtonContainer, TextsContainer } from './styles';
+import { RegisterCard, RegisterContainer, Form, InputsGroup, UploadContainer, SubmitButtonContainer, TextsContainer } from './styles';
 
 interface IRegisterProps {
 	categories: Category[];
@@ -139,104 +140,108 @@ export default function Register({ categories }: IRegisterProps) {
 	}, [fileUpload]);
 
 	return (
-		<RegisterContainer>
-			<Header css={{ padding: '40px 0' }}>
-				<Notebook size={32} />
-				<h3>Cadastrar</h3>
-			</Header>
+		<>
+			<NextSeo title='Cadastrar novos livros | BookWise' noindex />
 
-			<TextsContainer>
-				<p>
-					Caso você queira contribuir com a plataforma, é possível cadastrar um novo livro. O livro que você cadastrar ficará disponível na seção{' '}
-					<i>
-						<strong>explorar</strong>
-					</i>
-					, assim, todos poderão comentá-lo e avaliá-lo.
-				</p>
+			<RegisterContainer>
+				<Header css={{ padding: '40px 0' }}>
+					<Notebook size={32} />
+					<h3>Cadastrar</h3>
+				</Header>
 
-				<p>
-					Para cadastrar um novo livro, é necessário preencher o pequeno formulário logo abaixo. Todos os campos são obrigatórios, inclusive o de inserir uma
-					imagem como capa para o livro. Certifique-se de escolher uma boa imagem para servir como capa do livro.
-				</p>
+				<TextsContainer>
+					<p>
+						Caso você queira contribuir com a plataforma, é possível cadastrar um novo livro. O livro que você cadastrar ficará disponível na seção{' '}
+						<i>
+							<strong>explorar</strong>
+						</i>
+						, assim, todos poderão comentá-lo e avaliá-lo.
+					</p>
 
-				<p>
-					Por favor, não use esse espaço para violar as políticas da plataforma, insira apenas livros de conteúdo que estão de acordo e respeitem os termos da
-					plataforma.
-				</p>
-			</TextsContainer>
+					<p>
+						Para cadastrar um novo livro, é necessário preencher o pequeno formulário logo abaixo. Todos os campos são obrigatórios, inclusive o de inserir uma
+						imagem como capa para o livro. Certifique-se de escolher uma boa imagem para servir como capa do livro.
+					</p>
 
-			<RegisterCard>
-				<Form onSubmit={handleSubmit(handleRegisterBook)}>
-					<InputsGroup>
-						<label>
-							<span>Título</span>
-							<TextInput {...register('title')} />
-							{errors.title && <ErrorMessage>{errors.title.message}</ErrorMessage>}
-						</label>
-						<label>
-							<span>Autor</span>
-							<TextInput {...register('author')} />
-							{errors.author && <ErrorMessage>{errors.author.message}</ErrorMessage>}
-						</label>
-					</InputsGroup>
+					<p>
+						Por favor, não use esse espaço para violar as políticas da plataforma, insira apenas livros de conteúdo que estão de acordo e respeitem os termos da
+						plataforma.
+					</p>
+				</TextsContainer>
 
-					<InputsGroup>
-						<label>
-							<span>Total de páginas</span>
-							<TextInput
-								onChangeCapture={(e) => {
-									// @ts-ignore
-									e.target.value = e.target.value.normalize('NFD').replace(/[^0-9]/g, '');
+				<RegisterCard>
+					<Form onSubmit={handleSubmit(handleRegisterBook)}>
+						<InputsGroup>
+							<label>
+								<span>Título</span>
+								<TextInput {...register('title')} />
+								{errors.title && <ErrorMessage>{errors.title.message}</ErrorMessage>}
+							</label>
+							<label>
+								<span>Autor</span>
+								<TextInput {...register('author')} />
+								{errors.author && <ErrorMessage>{errors.author.message}</ErrorMessage>}
+							</label>
+						</InputsGroup>
+
+						<InputsGroup>
+							<label>
+								<span>Total de páginas</span>
+								<TextInput
+									onChangeCapture={(e) => {
+										// @ts-ignore
+										e.target.value = e.target.value.normalize('NFD').replace(/[^0-9]/g, '');
+									}}
+									{...register('totalPages')}
+								/>
+								{errors.totalPages && <ErrorMessage>{errors.totalPages.message}</ErrorMessage>}
+							</label>
+
+							<Controller
+								name='categories'
+								control={control}
+								render={({ field }) => {
+									return (
+										<label>
+											<span>Categorias</span>
+											<Dropdown options={categoriesDropDownMenu} isMulti value={field.value} onChange={field.onChange} />
+											{errors.categories && <ErrorMessage>{errors.categories.message}</ErrorMessage>}
+										</label>
+									);
 								}}
-								{...register('totalPages')}
 							/>
-							{errors.totalPages && <ErrorMessage>{errors.totalPages.message}</ErrorMessage>}
-						</label>
+						</InputsGroup>
 
-						<Controller
-							name='categories'
-							control={control}
-							render={({ field }) => {
-								return (
-									<label>
-										<span>Categorias</span>
-										<Dropdown options={categoriesDropDownMenu} isMulti value={field.value} onChange={field.onChange} />
-										{errors.categories && <ErrorMessage>{errors.categories.message}</ErrorMessage>}
-									</label>
-								);
-							}}
-						/>
-					</InputsGroup>
+						<UploadContainer>
+							<Button as='label' type='button' colorScheme='white'>
+								<UploadSimple size={22} />
+								Inserir imagem
+								<input hidden accept='image/*' type='file' {...register('coverImage')} />
+							</Button>
 
-					<UploadContainer>
-						<Button as='label' type='button' colorScheme='white'>
-							<UploadSimple size={22} />
-							Inserir imagem
-							<input hidden accept='image/*' type='file' {...register('coverImage')} />
-						</Button>
+							{imageDisplay && !imageIsLoading && (
+								<motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
+									<div className='imgDisplay'>
+										<Image src={imageDisplay} alt='' width={108} height={152} />
+										<span>{imageName.name}</span>
+									</div>
+								</motion.div>
+							)}
+							{imageIsLoading && <Progress />}
 
-						{imageDisplay && !imageIsLoading && (
-							<motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -10, opacity: 0 }} transition={{ duration: 0.2 }}>
-								<div className='imgDisplay'>
-									<Image src={imageDisplay} alt='' width={108} height={152} />
-									<span>{imageName.name}</span>
-								</div>
-							</motion.div>
-						)}
-						{imageIsLoading && <Progress />}
+							{errors.coverImage && <ErrorMessage>{errors.coverImage.message?.toString()}</ErrorMessage>}
+						</UploadContainer>
 
-						{errors.coverImage && <ErrorMessage>{errors.coverImage.message?.toString()}</ErrorMessage>}
-					</UploadContainer>
-
-					<SubmitButtonContainer>
-						<Button type='submit' disabled={isSubmitting || submtingFormLoading || imageIsLoading}>
-							Cadastrar
-							{submtingFormLoading && <Spinner />}
-						</Button>
-					</SubmitButtonContainer>
-				</Form>
-			</RegisterCard>
-		</RegisterContainer>
+						<SubmitButtonContainer>
+							<Button type='submit' disabled={isSubmitting || submtingFormLoading || imageIsLoading}>
+								Cadastrar
+								{submtingFormLoading && <Spinner />}
+							</Button>
+						</SubmitButtonContainer>
+					</Form>
+				</RegisterCard>
+			</RegisterContainer>
+		</>
 	);
 }
 

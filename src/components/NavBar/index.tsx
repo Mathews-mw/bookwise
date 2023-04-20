@@ -1,19 +1,19 @@
 import Image from 'next/image';
 import Modal from 'react-modal';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 
 import { theme } from '@/styles';
 import { NavLink } from './NavLink';
 import { UserAvatar } from '../UserAvatar';
+import { Button } from '../Action/Button/buttons';
 import { BookshelfIcon } from '../CustomIcons/BookshelfIcon';
 
 import { Binoculars, ChartLineUp, Notebook, SignOut, User } from '@phosphor-icons/react';
 import { NavbarContainer, NavLinksContainer, UserContainer, LogoContainer, SignoutBtn, SignoutModalContainer, LoginContainer } from './styles';
 
 import Logo from '../../assets/Logo.png';
-import { Button } from '../Action/Button/buttons';
-import { useRouter } from 'next/router';
 
 const customStyles = {
 	content: {

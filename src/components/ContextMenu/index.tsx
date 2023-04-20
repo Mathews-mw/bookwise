@@ -1,15 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 import { api } from '@/lib/axios';
-
+import { UserBook } from '@prisma/client';
+import { queryClient } from '@/lib/react-query';
 import { ShowErrorRequest } from '@/utils/ShowErrorRequest';
 import { ShowSuccessRequest } from '@/utils/ShowSuccessRequest';
 
 import { Check, List } from '@phosphor-icons/react';
 import { DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuArrow, DropdownMenuItemIndicator, IconButton } from './styles';
-import { queryClient } from '@/lib/react-query';
-import { UserBook } from '@prisma/client';
 
 interface IContextMenuProps {
 	bookId: string;

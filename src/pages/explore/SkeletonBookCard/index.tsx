@@ -1,5 +1,5 @@
-import Skeleton from 'react-loading-skeleton';
 import { SkeletonContainer } from './styles';
+import Skeleton from 'react-loading-skeleton';
 
 export function SkeletonBookCard() {
 	return (

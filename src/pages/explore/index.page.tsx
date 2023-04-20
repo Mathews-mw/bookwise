@@ -1,7 +1,9 @@
 import qs from 'qs';
-import { GetServerSideProps } from 'next';
+import { NextSeo } from 'next-seo';
 import debounce from 'lodash/debounce';
 import Drawer from 'react-modern-drawer';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
 import { useQuery } from '@tanstack/react-query';
 import { ChangeEvent, ReactElement, useCallback, useState } from 'react';
 
@@ -14,13 +16,11 @@ import { Header } from '@/components/Header';
 import DefaultLayout from '@/layouts/Default';
 import { SkeletonBookCard } from './SkeletonBookCard';
 import { TextInput } from '@/components/Form/TextInput';
-import { Book, BookCategory, Category, RatingBook, User, UserBook } from '@prisma/client';
+import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
+import { Book, BookCategory, Category, RatingBook, UserBook } from '@prisma/client';
 
 import { Binoculars, MagnifyingGlass, MinusCircle, PlusCircle } from '@phosphor-icons/react';
 import { ExploreContainer, HeaderContainer, CategoriesContainer, CategoryTag, BooksListContainer, ShowAllButton } from './styles';
-import { getServerSession } from 'next-auth';
-import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
-import { useRouter } from 'next/router';
 
 interface IExploreProps {
 	categories: Category[];
@@ -41,10 +41,10 @@ export default function Explore({ categories }: IExploreProps) {
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [isShortList, setIsShortList] = useState(true);
+	const [selectedBook, setSelectedBook] = useState<IBook>();
 	const [delayQuerySearch, setDelayQuerySearch] = useState('');
 	const [searchInputValue, setSearchInputValue] = useState('');
 	const [selectCategories, setSelectCategories] = useState<string[]>([]);
-	const [selectedBook, setSelectedBook] = useState<IBook>();
 
 	const toggleDrawer = () => {
 		setIsOpen((prevState) => !prevState);
@@ -63,7 +63,7 @@ export default function Explore({ categories }: IExploreProps) {
 		}
 	}
 
-	const { data: userBooks, isFetching: isUserBooksFetching } = useQuery<UserBook[]>(
+	const { data: userBooks } = useQuery<UserBook[]>(
 		['users_books', session?.data?.user.id, selectedBook?.id],
 		async () => {
 			const { data } = await api.get('/user-book');
@@ -100,6 +100,8 @@ export default function Explore({ categories }: IExploreProps) {
 
 	return (
 		<>
+			<NextSeo title='Explore novos generos | BookWise' />
+
 			<ExploreContainer>
 				<HeaderContainer>
 					<Header>

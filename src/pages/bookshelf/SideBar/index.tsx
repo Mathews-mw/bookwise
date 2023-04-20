@@ -1,14 +1,13 @@
 import dayjs from 'dayjs';
 import { User } from 'next-auth';
 
+import { theme } from '@/styles';
 import { UserAvatar } from '@/components/UserAvatar';
 import { Book, BookCategory, User as UserPrisma } from '@prisma/client';
 
-import { AvatarFrame, UserAnalyticsContainer, UserInfosContainer, Rectangle, UserStatisticsContainer, ItemContainer } from './styles';
-import { theme } from '@/styles';
 import { BookPlus, BookOpenCheck } from 'lucide-react';
-import Image from 'next/image';
 import { HourglassMedium } from '@phosphor-icons/react';
+import { AvatarFrame, UserAnalyticsContainer, UserInfosContainer, Rectangle, UserStatisticsContainer, ItemContainer } from './styles';
 
 interface IBooks extends Book {
 	bookCategory: BookCategory[];

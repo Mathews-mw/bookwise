@@ -1,5 +1,5 @@
-import Skeleton from 'react-loading-skeleton';
 import { theme } from '@/styles';
+import Skeleton from 'react-loading-skeleton';
 
 export function PostCommentSkeleton() {
 	return (

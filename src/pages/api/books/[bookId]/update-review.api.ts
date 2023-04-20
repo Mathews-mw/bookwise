@@ -1,9 +1,9 @@
+import { z } from 'zod';
 import { getServerSession } from 'next-auth';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 import { prisma } from '@/lib/prisma';
 import { buildNextAuthOptions } from '../../auth/[...nextauth].api';
-import { z } from 'zod';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method !== 'PUT') {
