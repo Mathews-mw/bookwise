@@ -1,11 +1,10 @@
-import { IconProps } from '@phosphor-icons/react';
-import { ComponentProps, forwardRef, ForwardRefRenderFunction } from 'react';
+import { ComponentProps, forwardRef, ForwardRefRenderFunction, ReactElement } from 'react';
 
 import { InputTextContainer, TextInputContainer, Prefix, Input } from './styles';
 
 export interface ITextInputProps extends ComponentProps<typeof Input> {
 	prefix?: string;
-	iconRight?: IconProps;
+	iconRight?: ReactElement;
 }
 
 const TextInputBase: ForwardRefRenderFunction<HTMLInputElement, ITextInputProps> = ({ prefix, iconRight, ...props }, ref) => {
