@@ -15,7 +15,7 @@ export function TrendingBooks({ bookTitle, bookAuthor, bookCover, rating }: ITre
 	console.log('rating: ', rating);
 	return (
 		<TrendingContainer>
-			<Image width={64} height={94} src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${bookCover}`} alt='Book cover' />
+			<Image width={64} height={94} src={`${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}/${bookCover}`} alt='Book cover' />
 
 			<div className='group'>
 				<BookInfos>

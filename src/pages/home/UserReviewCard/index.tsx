@@ -40,7 +40,7 @@ export function UserReviewCard({ publishedDate, updatedAt, bookTitle, bookAuthor
 	return (
 		<BookReviewContainer>
 			<ReviewContainer>
-				<Image src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${bookCover}`} height={152} width={108} quality={100} alt={`${bookTitle} cover`} />
+				<Image src={`${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}/${bookCover}`} height={152} width={108} quality={100} alt={`${bookTitle} cover`} />
 
 				<div className='group'>
 					<HeaderReview>

@@ -69,7 +69,7 @@ export default function Perfil({ user, userBooks, ratingBooks, MostReadUniqueCat
 									key={review.id}
 									bookTitle={review.book.title}
 									bookAuthor={review.book.author}
-									bookCover={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${review.book.cover_image!}`}
+									bookCover={`${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}/${review.book.cover_image!}`}
 									userBookRating={Number(userBookRating?.rating)}
 									puplishedAt={review.created_at}
 									updatedAt={review.updated_at ?? undefined}

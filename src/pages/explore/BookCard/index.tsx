@@ -28,12 +28,7 @@ export function BookCard({ book, userBooks, onOpenDrawer, onSelectBook }: IBookC
 		<>
 			<motion.div whileHover={{ scale: 1.03 }} transition={{ type: 'spring', stiffness: 400, damping: 10 }}>
 				<BookCardContainer onClick={handlerOpenDrawer}>
-					<Image
-						src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${book.cover_image}`}
-						alt={`Imagem da capa do livro ${book.title}`}
-						height={152}
-						width={108}
-					/>
+					<Image src={`${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}/${book.cover_image}`} alt={`Imagem da capa do livro ${book.title}`} height={152} width={108} />
 
 					<div className='group'>
 						<BookInfos>

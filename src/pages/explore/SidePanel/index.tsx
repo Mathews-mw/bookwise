@@ -124,7 +124,7 @@ export function SidePanel({ bookId, userSession, userBooks, onCloseDrawer }: ISi
 						)}
 
 						<BookCardContainer>
-							<Image src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${book?.cover_image}`} width={172} height={242} alt='book cover' />
+							<Image src={`${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}/${book?.cover_image}`} width={172} height={242} alt='book cover' />
 
 							<div className='group'>
 								<BookInfos>

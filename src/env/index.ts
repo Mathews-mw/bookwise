@@ -22,6 +22,7 @@ const envSchema = z.object({
 	AWS_SECRET_ACCESS_KEY: z.string(),
 	AWS_BUCKET_URL: z.string(),
 	NEXT_PUBLIC_API_BASE_URL: z.string(),
+	NEXT_PUBLIC_BASE_IMAGE_URL: z.string(),
 });
 
 const _env = envSchema.safeParse(process.env);

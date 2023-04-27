@@ -7,7 +7,9 @@ import { S3StorageProvider } from '@/providers/S3StorageProvider';
 import { LocalStorageProvider } from '@/providers/LocalStorageProvider';
 
 interface Request extends NextApiRequest {
-	file: Express.Multer.File;
+	file: Express.Multer.File & {
+		location: string;
+	};
 }
 
 interface Categories {
@@ -99,7 +101,9 @@ export default async function handler(req: Request, res: NextApiResponse) {
 	await runMiddleware(req, res, upload.single('cover_image'));
 
 	const { title, author, total_pages, categories } = bodyCreateBookSchema.parse(req.body);
-	const { filename } = req.file;
+	const { location } = req.file;
+
+	const filename = location.split('/')[4];
 
 	const doesBookAlredyExist = await prisma.book.findUnique({
 		where: {

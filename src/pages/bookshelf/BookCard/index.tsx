@@ -18,12 +18,7 @@ export function BookCard({ book, onSelectBook }: IBookCardProps) {
 
 	return (
 		<BookCardContainer onClick={handlerOpenDrawer}>
-			<Image
-				src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${book.cover_image}`}
-				alt={`Imagem da capa do livro ${book.title}`}
-				height={152}
-				width={108}
-			/>
+			<Image src={`${process.env.NEXT_PUBLIC_BASE_IMAGE_URL}/${book.cover_image}`} alt={`Imagem da capa do livro ${book.title}`} height={152} width={108} />
 
 			<div className='group'>
 				<BookInfos>
