@@ -14,7 +14,7 @@ import { TextInput } from '@/components/Form/TextInput';
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
 import { Book, BookCategory, BookReview, Category, RatingBook, UserBook, User as UserPrisma } from '@prisma/client';
 
-import { MagnifyingGlass, User } from '@phosphor-icons/react';
+import { Search, User } from 'lucide-react';
 import { PerfilContainer, HeaderContainer, MyBookReviewsContainer, AnalyticsSidebarContainer, ReviewsContainer } from './styles';
 
 interface IBook extends Book {
@@ -55,7 +55,7 @@ export default function Perfil({ user, userBooks, ratingBooks, MostReadUniqueCat
 				<MyBookReviewsContainer>
 					<TextInput
 						placeholder='Buscar livro avaliado'
-						iconRight={<MagnifyingGlass size={20} />}
+						iconRight={<Search size={20} />}
 						value={filterSearch}
 						onChange={(e) => setFilterSearch(e.target.value)}
 					/>

@@ -21,8 +21,8 @@ import { Button } from '@/components/Action/Button/buttons';
 import { ShowErrorRequest } from '@/utils/ShowErrorRequest';
 import { ShowSuccessRequest } from '@/utils/ShowSuccessRequest';
 
-import { Notebook, UploadSimple } from '@phosphor-icons/react';
 import { RegisterCard, RegisterContainer, Form, InputsGroup, UploadContainer, SubmitButtonContainer, TextsContainer } from './styles';
+import { BookPlus, Upload } from 'lucide-react';
 
 interface IRegisterProps {
 	categories: Category[];
@@ -145,7 +145,7 @@ export default function Register({ categories }: IRegisterProps) {
 
 			<RegisterContainer>
 				<Header css={{ padding: '40px 0' }}>
-					<Notebook size={32} />
+					<BookPlus size={32} />
 					<h3>Cadastrar</h3>
 				</Header>
 
@@ -214,7 +214,7 @@ export default function Register({ categories }: IRegisterProps) {
 
 						<UploadContainer>
 							<Button as='label' type='button' colorScheme='white'>
-								<UploadSimple size={22} />
+								<Upload size={22} />
 								Inserir imagem
 								<input hidden accept='image/*' type='file' {...register('coverImage')} />
 							</Button>

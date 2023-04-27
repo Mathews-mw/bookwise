@@ -1,7 +1,7 @@
 import { theme } from '@/styles';
 
-import { Star } from '@phosphor-icons/react';
 import { Container, StarsGroup, StarFilled, StartEmpty } from './styles';
+import { Star } from 'lucide-react';
 
 interface IStarsRatingView {
 	totalStars?: number;
@@ -25,11 +25,11 @@ export function StarsRatingView({ totalStars = 5, rating, showAverage }: IStarsR
 				return (
 					<StarsGroup key={index} title={showAverage ? `Média: ${rating}` : undefined}>
 						<StarFilled style={{ width: `${showRatingWithPrecision ? `${(activeState % 1) * 100}%` : '0%'}` }}>
-							<Star size={22} weight='fill' />
+							<Star size={22} fill={`${theme.colors.purple100}`} />
 						</StarFilled>
 
 						<StartEmpty style={{ color: `${showEmptyIcon ? theme.colors.purple100 : theme.colors.purple100}` }}>
-							{showEmptyIcon ? <Star size={20} weight='regular' /> : <Star size={20} weight='fill' />}
+							{showEmptyIcon ? <Star size={20} /> : <Star size={20} fill={`${theme.colors.purple100}`} />}
 						</StartEmpty>
 					</StarsGroup>
 				);

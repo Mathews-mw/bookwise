@@ -15,7 +15,6 @@ export const BookReviewContainer = styled('div', {
 export const HeaderReview = styled('div', {
 	display: 'flex',
 	justifyContent: 'space-between',
-	width: '100%',
 });
 
 export const ReviewContainer = styled('div', {
@@ -28,6 +27,7 @@ export const ReviewContainer = styled('div', {
 		gap: '1.25rem',
 
 		height: 'auto',
+		width: '100%',
 	},
 });
 

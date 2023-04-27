@@ -7,7 +7,7 @@ import { queryClient } from '@/lib/react-query';
 import { ShowErrorRequest } from '@/utils/ShowErrorRequest';
 import { ShowSuccessRequest } from '@/utils/ShowSuccessRequest';
 
-import { Check, List } from '@phosphor-icons/react';
+import { Check, Menu } from 'lucide-react';
 import { DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuArrow, DropdownMenuItemIndicator, IconButton } from './styles';
 
 interface IContextMenuProps {
@@ -102,7 +102,7 @@ export function ContextMenu({ bookId, userId, userBook }: IContextMenuProps) {
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger asChild>
 				<IconButton aria-label='Customise options'>
-					<List size={22} weight='bold' />
+					<Menu size={22} />
 				</IconButton>
 			</DropdownMenu.Trigger>
 

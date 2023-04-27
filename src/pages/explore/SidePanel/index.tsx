@@ -20,7 +20,7 @@ import { PostCommentSkeleton } from './SkeletonsSidePanel/PostCommentSkeleton';
 import { TitleContainerSkeleton } from './SkeletonsSidePanel/TitleContainerSkeleton';
 import { Book, BookCategory, Category, RatingBook, BookReview, UserBook, User } from '@prisma/client';
 
-import { BookmarkSimple, BookOpen, X } from '@phosphor-icons/react';
+import { BookOpen, Bookmark, X } from 'lucide-react';
 import {
 	AboutContainer,
 	BookCardContainer,
@@ -107,7 +107,7 @@ export function SidePanel({ bookId, userSession, userBooks, onCloseDrawer }: ISi
 				<HeaderContainer>
 					{book && <ContextMenu bookId={book.id} userId={userSession?.id} userBook={userBooks} />}
 					<Button size='sm' variant='ghost' onClick={() => onCloseDrawer()}>
-						<X weight='bold' />
+						<X />
 					</Button>
 				</HeaderContainer>
 
@@ -151,7 +151,7 @@ export function SidePanel({ bookId, userSession, userBooks, onCloseDrawer }: ISi
 
 						<AboutContainer>
 							<div className='about-infos-group'>
-								<BookmarkSimple size={24} />
+								<Bookmark size={24} />
 
 								<div className='about-infos'>
 									<small>Categoria</small>

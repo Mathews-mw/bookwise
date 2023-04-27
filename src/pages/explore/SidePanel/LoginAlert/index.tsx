@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import LogoGit from '../../../../assets/icons_github.svg';
 import LogoGoogle from '../../../../assets/logos_google-icon.svg';
 
-import { X } from '@phosphor-icons/react';
+import { X } from 'lucide-react';
 import { Container, CloseBtnContainer, Title, OptionsLoginContainer, OptionLogin } from './styles';
 
 interface ILoginAlertProps {

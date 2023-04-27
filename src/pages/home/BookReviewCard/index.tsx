@@ -5,6 +5,7 @@ import * as Collapsible from '@radix-ui/react-collapsible';
 
 import { User } from '@prisma/client';
 import { UserAvatar } from '@/components/UserAvatar';
+import { StarsRatingView } from '@/components/Rating/StarsRatingView';
 
 import { styled } from '@/styles';
 import {
@@ -17,7 +18,6 @@ import {
 	CollapsibleTrigger,
 	CollapsibleButton,
 } from './styles';
-import { StarsRatingView } from '@/components/Rating/StarsRatingView';
 
 interface IBookReviewCardProps {
 	userName: string;

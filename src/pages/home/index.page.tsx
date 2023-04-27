@@ -15,8 +15,8 @@ import { ratingCalculate } from '../../utils/rating-calculate';
 import { Book, BookReview, RatingBook, User } from '@prisma/client';
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
 
-import { CaretRight, ChartLineUp } from '@phosphor-icons/react';
 import { HomeContainer, BreadcrumbTitleContainer, RecentViewsContainer, ReviewsContainer, TrendingContainer, TrandingBooksList, NavButton } from './styles';
+import { ChevronRight, LineChart } from 'lucide-react';
 
 interface IBookReviews extends BookReview {
 	book: Book;
@@ -40,7 +40,7 @@ export default function Home({ bookReviews, userLatestBookReview, top4MostPopula
 			<HomeContainer>
 				<RecentViewsContainer>
 					<Header css={{ padding: '40px 0' }}>
-						<ChartLineUp size={32} />
+						<LineChart size={32} />
 						<h3>Início</h3>
 					</Header>
 
@@ -49,7 +49,7 @@ export default function Home({ bookReviews, userLatestBookReview, top4MostPopula
 							<BreadcrumbTitleContainer>
 								<span>Sua última avaliação</span>
 								<NavButton onClick={() => router.push('/perfil')}>
-									Ver todos <CaretRight size={16} weight='bold' />
+									Ver todos <ChevronRight size={16} />
 								</NavButton>
 							</BreadcrumbTitleContainer>
 							<UserReviewCard
@@ -96,7 +96,7 @@ export default function Home({ bookReviews, userLatestBookReview, top4MostPopula
 					<BreadcrumbTitleContainer>
 						<span>Livros populares</span>
 						<NavButton onClick={() => router.push('/explore')}>
-							Ver todos <CaretRight size={16} weight='bold' />
+							Ver todos <ChevronRight size={16} />
 						</NavButton>
 					</BreadcrumbTitleContainer>
 

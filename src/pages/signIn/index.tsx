@@ -17,8 +17,8 @@ import githubIcon from '../../assets/icons_github.svg';
 import googleIcon from '../../assets/logos_google-icon.svg';
 import rocketLaunchIcon from '../../assets/RocketLaunch.svg';
 
-import { ArrowCircleRight, Check } from '@phosphor-icons/react';
 import { HomeContainer, Preview, LoginContainer, LoginGroup, LoginBox, LoginOptionBox } from './styles';
+import { ArrowRightCircle, Check } from 'lucide-react';
 
 enum EAcessTypes {
 	github = 'github',
@@ -94,7 +94,7 @@ export default function SignIn() {
 								) : (
 									<div className='not-connected'>
 										<span>Entrar com Google</span>
-										<ArrowCircleRight size={22} />
+										<ArrowRightCircle size={22} />
 									</div>
 								)}
 							</LoginOptionBox>
@@ -109,7 +109,7 @@ export default function SignIn() {
 								) : (
 									<div className='not-connected'>
 										<span>Entrar com Github</span>
-										<ArrowCircleRight size={22} />
+										<ArrowRightCircle size={22} />
 									</div>
 								)}
 							</LoginOptionBox>
@@ -118,7 +118,7 @@ export default function SignIn() {
 								<Image src={rocketLaunchIcon} quality={100} height={32} priority alt='Imagem do logo de um foguete' />
 								<div className='not-connected'>
 									<span>Entrar como visitante</span>
-									<ArrowCircleRight size={22} />
+									<ArrowRightCircle size={22} />
 								</div>
 							</LoginOptionBox>
 						</LoginBox>

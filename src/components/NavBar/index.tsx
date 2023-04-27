@@ -10,10 +10,10 @@ import { UserAvatar } from '../UserAvatar';
 import { Button } from '../Action/Button/buttons';
 import { BookshelfIcon } from '../CustomIcons/BookshelfIcon';
 
-import { Binoculars, ChartLineUp, Notebook, SignOut, User } from '@phosphor-icons/react';
 import { NavbarContainer, NavLinksContainer, UserContainer, LogoContainer, SignoutBtn, SignoutModalContainer, LoginContainer } from './styles';
 
 import Logo from '../../assets/Logo.png';
+import { BookPlus, LineChart, LogIn, LogOut, Rocket, User } from 'lucide-react';
 
 const customStyles = {
 	content: {
@@ -59,14 +59,14 @@ export function NavBar() {
 					<NavLinksContainer>
 						<NavLink href={'/home'} getUrlPath={() => handleSetUrlPath()}>
 							<>
-								<ChartLineUp size={24} />
+								<LineChart size={24} />
 								<span>Início</span>
 							</>
 						</NavLink>
 
 						<NavLink href={'/explore'} getUrlPath={() => handleSetUrlPath()}>
 							<>
-								<Binoculars size={24} />
+								<Rocket size={24} />
 								<span>Explorar</span>
 							</>
 						</NavLink>
@@ -75,7 +75,7 @@ export function NavBar() {
 							<>
 								<NavLink href={'/register'} getUrlPath={() => handleSetUrlPath()}>
 									<>
-										<Notebook size={24} />
+										<BookPlus size={24} />
 										<span>Cadastrar</span>
 									</>
 								</NavLink>
@@ -107,13 +107,13 @@ export function NavBar() {
 
 						<SignoutBtn onClick={() => setModalIsOpen(true)}>
 							Sair
-							<SignOut size={20} />
+							<LogOut size={20} />
 						</SignoutBtn>
 					</UserContainer>
 				) : (
 					<LoginContainer onClick={() => router.push('/')}>
 						<span>Fazer login</span>
-						<SignOut size={20} />
+						<LogIn size={20} />
 					</LoginContainer>
 				)}
 			</NavbarContainer>

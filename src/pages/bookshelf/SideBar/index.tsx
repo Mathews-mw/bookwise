@@ -5,8 +5,7 @@ import { theme } from '@/styles';
 import { UserAvatar } from '@/components/UserAvatar';
 import { Book, BookCategory, User as UserPrisma } from '@prisma/client';
 
-import { BookPlus, BookOpenCheck } from 'lucide-react';
-import { HourglassMedium } from '@phosphor-icons/react';
+import { BookPlus, BookOpenCheck, Hourglass } from 'lucide-react';
 import { AvatarFrame, UserAnalyticsContainer, UserInfosContainer, Rectangle, UserStatisticsContainer, ItemContainer } from './styles';
 
 interface IBooks extends Book {
@@ -42,7 +41,7 @@ export function SideBar({ user, userSession, booksCurrentlyReading, alreadyReadB
 
 				<UserStatisticsContainer>
 					<ItemContainer>
-						<HourglassMedium size={22} color={`${theme.colors.yellow200}`} />
+						<Hourglass size={22} color={`${theme.colors.yellow200}`} />
 						<div className='itensGroup'>
 							<span>{booksCurrentlyReading.length}</span>
 							<span>Lendo</span>

@@ -5,7 +5,7 @@ import { User } from 'next-auth';
 import { UserAvatar } from '@/components/UserAvatar';
 import { Book, BookCategory, Category, UserBook, User as UserPrisma, RatingBook } from '@prisma/client';
 
-import { Books, BookmarksSimple, BookOpenText } from '@phosphor-icons/react';
+import { BookCopy, BookOpen, Bookmark } from 'lucide-react';
 import { AvatarFrame, UserAnalyticsContainer, UserInfosContainer, Rectangle, UserStatisticsContainer, ItemContainer } from './styles';
 
 import BookStar from '../../../assets/book-star.svg';
@@ -55,7 +55,7 @@ export function UserAnalytics({ user, userSession, userBooks, ratingBooks, mostR
 
 				<UserStatisticsContainer>
 					<ItemContainer>
-						<Books size={32} />
+						<BookCopy size={32} />
 						<div className='itensGroup'>
 							<span>{amountReadBooks}</span>
 							<span>Livros lidos</span>
@@ -63,7 +63,7 @@ export function UserAnalytics({ user, userSession, userBooks, ratingBooks, mostR
 					</ItemContainer>
 
 					<ItemContainer>
-						<BookOpenText size={32} />
+						<BookOpen size={32} />
 						<div className='itensGroup'>
 							<span>{amountPagesReaded}</span>
 							<span>Páginas lidas</span>
@@ -71,7 +71,7 @@ export function UserAnalytics({ user, userSession, userBooks, ratingBooks, mostR
 					</ItemContainer>
 
 					<ItemContainer>
-						<BookmarksSimple size={32} />
+						<Bookmark size={32} />
 						<div className='itensGroup'>
 							<span>{mostReadCategories.join(', ')}</span>
 							<span>Categoria mais lida</span>

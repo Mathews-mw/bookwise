@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { theme } from '@/styles';
 import { api } from '@/lib/axios';
-import { Check, X } from '@phosphor-icons/react';
 import { UserAvatar } from '@/components/UserAvatar';
 import { TextArea } from '@/components/Form/TextArea';
 import { Spinner } from '@/components/Loaders/Spinner';
@@ -18,6 +17,7 @@ import { BookReview, RatingBook, User } from '@prisma/client';
 import { StarsRating } from '@/components/Rating/StarsRating';
 import { ShowSuccessRequest } from '@/utils/ShowSuccessRequest';
 
+import { Check, X } from 'lucide-react';
 import { Container, HeaderComment, TextComment } from './styles';
 
 interface IBookReviewResponse extends BookReview {
@@ -110,11 +110,11 @@ export function UserEditPostComment({ userSession, closeComment, bookId }: IUser
 
 							<div className='btn-group'>
 								<Button size='sm' onClick={() => closeComment()}>
-									<X weight='bold' />
+									<X />
 								</Button>
 
 								<Button size='sm' disabled={isSubmitting || actionLoading || ratingError}>
-									<Check color={`${theme.colors.green100}`} weight='bold' />
+									<Check color={`${theme.colors.green100}`} />
 								</Button>
 							</div>
 						</div>

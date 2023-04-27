@@ -19,7 +19,7 @@ import { TextInput } from '@/components/Form/TextInput';
 import { buildNextAuthOptions } from '../api/auth/[...nextauth].api';
 import { Book, BookCategory, Category, RatingBook, UserBook } from '@prisma/client';
 
-import { Binoculars, MagnifyingGlass, MinusCircle, PlusCircle } from '@phosphor-icons/react';
+import { MinusCircle, PlusCircle, Rocket, Search } from 'lucide-react';
 import { ExploreContainer, HeaderContainer, CategoriesContainer, CategoryTag, BooksListContainer, ShowAllButton } from './styles';
 
 interface IExploreProps {
@@ -105,17 +105,12 @@ export default function Explore({ categories }: IExploreProps) {
 			<ExploreContainer>
 				<HeaderContainer>
 					<Header>
-						<Binoculars size={32} />
+						<Rocket size={32} />
 						<h3>Explorar</h3>
 					</Header>
 
 					<div className='inputContainer'>
-						<TextInput
-							placeholder='Buscar livro ou autor'
-							iconRight={<MagnifyingGlass size={20} />}
-							value={searchInputValue}
-							onChange={(e) => handlerSearch(e)}
-						/>
+						<TextInput placeholder='Buscar livro ou autor' iconRight={<Search size={20} />} value={searchInputValue} onChange={(e) => handlerSearch(e)} />
 					</div>
 				</HeaderContainer>
 
