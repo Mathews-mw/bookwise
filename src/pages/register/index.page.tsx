@@ -197,19 +197,21 @@ export default function Register({ categories }: IRegisterProps) {
 								{errors.totalPages && <ErrorMessage>{errors.totalPages.message}</ErrorMessage>}
 							</label>
 
-							<Controller
-								name='categories'
-								control={control}
-								render={({ field }) => {
-									return (
-										<label>
-											<span>Categorias</span>
-											<Dropdown options={categoriesDropDownMenu} isMulti value={field.value} onChange={field.onChange} />
-											{errors.categories && <ErrorMessage>{errors.categories.message}</ErrorMessage>}
-										</label>
-									);
-								}}
-							/>
+							{categories.length > 0 && (
+								<Controller
+									name='categories'
+									control={control}
+									render={({ field }) => {
+										return (
+											<label>
+												<span>Categorias</span>
+												<Dropdown options={categoriesDropDownMenu} isMulti value={field.value} onChange={field.onChange} />
+												{errors.categories && <ErrorMessage>{errors.categories.message}</ErrorMessage>}
+											</label>
+										);
+									}}
+								/>
+							)}
 						</InputsGroup>
 
 						<UploadContainer>
