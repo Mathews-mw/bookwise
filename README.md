@@ -7,7 +7,7 @@ This is an application made entirely in NextJS. It's a recommendation platform f
 Main libraries used in this project:
 - NextJS (application development framework);
 - Prisma (ORM);
-- Stiches (Styles);
+- Stitches (Styles);
 - AWS S3 (File storage);
 - Postgres (DB);
 
