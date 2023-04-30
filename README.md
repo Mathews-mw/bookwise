@@ -1,4 +1,4 @@
-# Welcome to BookWise <a data-flickr-embed="true" href="https://www.flickr.com/photos/196300636@N02/52857411366/in/dateposted-public/" title="bookwise-logo"><img src="https://live.staticflickr.com/65535/52857411366_42ece52a2a_o.png" width="128" height="32" alt="bookwise-logo"/></a><script async src="//embedr.flickr.com/assets/client-code.js" charset="utf-8"></script>
+# Welcome to BookWise <img src="https://live.staticflickr.com/65535/52857411366_42ece52a2a_o.png" width="128" height="32" alt="bookwise-logo"/>
 
 This is an application made entirely in NextJS. It's a recommendation platform for readers, a place where they can rate and see reviews from other readers about the most diverse books.
 
