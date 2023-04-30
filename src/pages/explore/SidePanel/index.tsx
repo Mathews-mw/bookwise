@@ -105,7 +105,7 @@ export function SidePanel({ bookId, userSession, userBooks, onCloseDrawer }: ISi
 		<>
 			<Container>
 				<HeaderContainer>
-					{book && <ContextMenu bookId={book.id} userId={userSession?.id} userBook={userBooks} />}
+					{book && !!userSession && <ContextMenu bookId={book.id} userId={userSession?.id} userBook={userBooks} />}
 					<Button size='sm' variant='ghost' onClick={() => onCloseDrawer()}>
 						<X />
 					</Button>
